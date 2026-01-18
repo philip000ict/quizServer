@@ -4,6 +4,15 @@ const UI_MODE = {
   QUIZ: "quiz"
 };
 
+const appState = {
+  subjects: {},        // full subject → categories map
+  subject: null,
+  category: null,
+  topic: null,
+  quiz: null,
+  points: 0,
+  score: 0
+};
 
 let currentMode = UI_MODE.SUBJECT;
 let quizData = {};
