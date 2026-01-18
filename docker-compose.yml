@@ -1,0 +1,23 @@
+services:
+  quizserver:
+    image: quizserver:latest 
+    container_name: quizserver
+    networks:
+      - shared-db-net
+    volumes:
+      - ./:/app
+      - ./templates:/app/templates
+      - ./static/img:/app/static/img
+#      - ./img:/var/www/html/img
+#      - /mnt/ebs/img:/app/img
+#      - /mnt/ebs/img:/var/www/html/img
+    env_file:
+      - .env
+    ports:
+      - "5050:5000"
+
+networks:
+  shared-db-net:
+    external: true
+    name: shared-db-net
+
