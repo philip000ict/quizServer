@@ -1,3 +1,11 @@
+const UI_MODE = {
+  SUBJECT: "subject",
+  CATEGORY: "category",
+  QUIZ: "quiz"
+};
+
+
+let currentMode = UI_MODE.SUBJECT;
 let quizData = {};
 let quizList = [];
 let currentIndex = 0;
