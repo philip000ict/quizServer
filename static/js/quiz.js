@@ -1,24 +1,71 @@
+ const UI_MODE = {
+  SUBJECT: "subject",
+  CATEGORY: "category",
+  QUIZ: "quiz"
+};
+
+let currentMode = UI_MODE.SUBJECT;
+ 
+const appState = {
+  subjects: {},        // full subject → categories map
+  subject: null,
+  category: null,
+  topic: null,
+  quiz: null,
+  points: 0,
+  score: 0
+};
+ 
  let qdata = []; //data for current quiz
     let rdata = []; //data for random quiz
     let selectedSubject = "";
     let selectedCategory = "";
     let selectedTopic = "";
 
-    function init(){
-      // loadRandomQuiz();
-      loadQuizHeader()
-      activateRandomButton();
-      loadSubjectDropdown();
-      
-      
-    };
 
+async function init() {
+  const res = await fetch("/api/subjects");
+  appState.subjects = await res.json();
 
-    async function loadSubjectDropdown() {
-      const res = await fetch("/api/subjects");
-      const data = await res.json();
-      console.log("loadDropdowns() >>> data = ", data)
-      qdata = data;
+  loadSubjectDropdown();
+  loadSubjectPanel();
+  activateButtons();
+}
+
+function selectSubject(subject) {
+  appState.subject = subject;
+  appState.category = null;
+  appState.topic = null;
+  appState.quiz = null;
+
+  loadCategoryDropdown();
+  renderCategoryPanel();
+  loadSubjectImage();
+  setHeader();
+
+  currentMode = UI_MODE.CATEGORY;
+}
+
+async function selectCategory(category) {
+  appState.category = category;
+
+  const res = await fetch(
+    `/api/single_quiz_by_category/${encodeURIComponent(category)}`
+  );
+  appState.quiz = await res.json();
+
+  renderQuizPanel();
+  setHeader();
+
+  currentMode = UI_MODE.QUIZ;
+}
+
+function loadSubjectDropdown() {
+    // async 
+    //   const res = await fetch("/api/subjects");
+    //   const data = await res.json();
+      console.log("loadDropdowns() >>> data = ", appState.subjects)
+      data = appState.subjects;
       const subjectSelect = document.getElementById("subject");
       // const categorySelect = document.getElementById("category");
       
@@ -34,14 +81,14 @@
       }
       subjectSelect.onchange = () => { onchangeSubjectSelect(data)
       }
-      loadSubjectPanel();
+    //   loadSubjectPanel();
       };
 
     async function loadSubjectPanel() {
       // const res = await fetch("/api/subjects");
       // const data = await res.json();
       // 
-      data = qdata;
+      const data = appState.subjects;
       console.log("loadSubjectPanel() >>> data = ", data);
       const subjectPanel = document.getElementById("quizModal");
       // const categorySelect = document.getElementById("category");
