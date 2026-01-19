@@ -15,21 +15,11 @@ const appState = {
   points: 0,
   score: 0
 };
- 
- let qdata = []; //data for current quiz
-    let rdata = []; //data for random quiz
-    let selectedSubject = "";
-    let selectedCategory = "";
-    let selectedTopic = "";
-
 
 async function init() {
   const res = await fetch("/api/subjects");
   appState.subjects = await res.json();
-
-  loadSubjectDropdown();
-  loadSubjectPanel();
-  activateButtons();
+  loadSubjectButtons();
 }
 
 function selectSubject(subject) {
@@ -38,10 +28,7 @@ function selectSubject(subject) {
   appState.topic = null;
   appState.quiz = null;
 
-  loadCategoryDropdown();
   renderCategoryPanel();
-  loadSubjectImage();
-  setHeader();
 
   currentMode = UI_MODE.CATEGORY;
 }
@@ -60,187 +47,77 @@ async function selectCategory(category) {
   currentMode = UI_MODE.QUIZ;
 }
 
-function loadSubjectDropdown() {
-    // async 
-    //   const res = await fetch("/api/subjects");
-    //   const data = await res.json();
-      console.log("loadDropdowns() >>> data = ", appState.subjects)
-      data = appState.subjects;
-      const subjectSelect = document.getElementById("subject");
-      // const categorySelect = document.getElementById("category");
-      
-      const option = document.createElement("option");
-      option.value = "default";
-      option.text = "Select Subject";
-      subjectSelect.appendChild(option);
-      for (let subject in data) {
-        const option = document.createElement("option");
-        option.value = subject;
-        option.text = subject;
-        subjectSelect.appendChild(option);
+async function loadSubjectButtons() {
+    console.log("loadSubjectPanel() >>> data = ", appState.subjects);
+    const buttonPanel = document.getElementById("buttonPanel");
+
+    if (appState.subjects) {
+        for (let subject in appState.subjects) {
+        const subjectButton = document.createElement("div");
+        subjectButton.id = subject;
+        subjectButton.innerText = subject;
+        subjectButton.className = "panelbtn";
+        subjectButton.addEventListener('click', onchangeSubjectSelect);
+        buttonPanel.appendChild(subjectButton);
+        };
       }
-      subjectSelect.onchange = () => { onchangeSubjectSelect(data)
-      }
-    //   loadSubjectPanel();
-      };
-
-    async function loadSubjectPanel() {
-      // const res = await fetch("/api/subjects");
-      // const data = await res.json();
-      // 
-      const data = appState.subjects;
-      console.log("loadSubjectPanel() >>> data = ", data);
-      const subjectPanel = document.getElementById("quizModal");
-      // const categorySelect = document.getElementById("category");
-      
-      const option = document.createElement("option");
-      option.value = "default";
-      option.text = "Select Subject";
-      subjectPanel.appendChild(option);
-      subjectPanel.innerHTML= "";
-
-        if (data) {
-          const subjectTitle = document.createElement("div");
-          subjectTitle.innerHTML = '<b>Quiz Subjects</b>';
-          subjectTitle.className = "tile title"
-          subjectPanel.appendChild(subjectTitle);
-          // data.forEach(cat => {
-          for (let subject in data) {
-            const ctile = document.createElement("div");
-            ctile.id = subject;
-            ctile.innerText = subject;
-            ctile.className = "tile";
-            ctile.onclick = () => { onchangeSubjectSelect() };
-            subjectPanel.appendChild(ctile);
-          };
-        }
-        subjectPanel.style = "display: block;";
-      // subjectPanel.onchange = () => {  }
-      };
-
-    function onchangeSubjectSelect(data){ 
-        // selectedSubject = subjectSelect.value;
-        
-        loadCategoryDropdown(data);
-        // console.log("onchangeSubjectSelect(data) = ", selectedSubject);
-        loadCategoryPanel(data);
-        loadImage();
-     };
-
-    function loadCategoryDropdown(data) {
-        const subjectSelect = document.getElementById("subject");
-        const categorySelect = document.getElementById("category");
-        const quizModal = document.getElementById("quizModal");
-
-        selectedSubject = subjectSelect.value;
-        const quizHeader = document.getElementById("quizHeader");
-        quizHeader.innerHTML = `${selectedSubject} → select a Category → select a Topic`;
-        // console.log("loadCategoryDropdown(data) selectedSubject = ", selectedSubject);
-
-        // const 
-        // load category select default value
-        categorySelect.innerHTML = "";
-        const option = document.createElement("option");
-        option.value = "default";
-        // option.text = "<<< Select Subject First <<<";
-        option.text = "Select Category";
-        categorySelect.appendChild(option);
-
-        // load category select values
-        if (data[selectedSubject]) {
-          data[selectedSubject].forEach(cat => {
-            const option = document.createElement("option");
-            option.value = cat;
-            option.text = cat;
-            categorySelect.appendChild(option);
-          });
-        }
-        categorySelect.onchange = () => {
-          selectedCategory = categorySelect.value;
-          if (selectedCategory) {
-            console.log("selected category = ",selectedCategory)
-            loadSelectQuiz(selectedCategory); // ✅ call your quiz rendering function
-          }
-      };
     };
 
-    function loadCategoryPanel(data){
-        document.getElementById("quizModal").style = "display: none;";
-        const subjectSelect = document.getElementById("subject");
-        const categoryModal = document.getElementById("categoryModal");
-        selectedSubject = subjectSelect.value;
-        // const 
-        categoryModal.innerHTML= "";
+function onchangeSubjectSelect(event){ 
+    console.log(`The selected event =  ${event.target.id}`);
+    appState.subject = event.target.id;
+    loadCategoryPanel();
+    };
 
-        if (data[selectedSubject]) {
-          const subjectTitle = document.createElement("div");
-          subjectTitle.innerHTML = '<b>'+selectedSubject+'</b>';
-          subjectTitle.className = "tile title"
-          categoryModal.appendChild(subjectTitle);
-          data[selectedSubject].forEach(cat => {
+async function selectCategory(event) {
+  appState.category = event.target.innerText;
+    console.log("The selectCategory(category) = ", event.target.innerText);
+  const res = await fetch(
+    `/api/single_quiz_by_category/${encodeURIComponent(appState.category)}`
+  );
+  appState.quiz = await res.json();
 
+  loadQuizModal();
+  setHeader();
+
+  currentMode = UI_MODE.QUIZ;
+}
+
+function loadCategoryPanel(){
+    const categoryModal = document.getElementById("categoryModal");
+    document.getElementById("quizHeader").innerHTML='<b>'+appState.subject+'</b>';
+
+    if (appState.subjects[appState.subject]) {
+
+        appState.subjects[appState.subject].forEach(category => {
+            console.log("The category = ", category);
             const ctile = document.createElement("div");
-            ctile.id = cat;
-            ctile.innerText = cat;
+            ctile.id = category;
+            ctile.innerHTML = '<b>'+category+'</b>';
             ctile.className = "tile";
-            // ctile.addEventListener("click", getQuestionChoice)
-            ctile.onclick = () => { loadSelectQuiz(cat)};
+            ctile.addEventListener('click', selectCategory);
             categoryModal.appendChild(ctile);
-          });
+            });
         }
-        categoryModal.style = "display: block;";
-      };
+    categoryModal.style = "display: block;";
+    };
 
       function loadImage(){
-        let selectedImage = selectedSubject.replaceAll(" ", "") + ".webp";   
+        let selectedImage = appState.subject.replaceAll(" ", "") + ".webp";   
         console.log(STATIC_IMG_BASE + selectedImage);
         document.getElementById("subjectImage").innerHTML = `<img src="${STATIC_IMG_BASE}${selectedImage}" alt="${selectedSubject}">`;
       };
 
-      function loadQuizHeader(){
+      function setHeader(){
         const quizHeader = document.getElementById("quizHeader");
         quizHeader.innerHTML = `${selectedSubject} → ${selectedCategory} → ${selectedTopic}`;
         quizHeader.style = "font: 2em sans-serif;";
         // subjectSelect.dispatchEvent(new Event("change"));
       }
 
-    function loadQuizCategories(data){
+    function loadQuizModal(){
   // default display here
-      console.log("loadQuizCategories(data) = ", data);
-      // qdata = data;
-      
-      const quizModal = document.getElementById("quizModal");
-      document.getElementById("questionModal").innerHTML = "";
-      quizModal.innerHTML = "";
-      quizModal.className = "quizBlock";
-      const title = document.createElement("div");
-      title.id = 'quiz#0';
-      title.className = "tile title default-title";
-      // title.style = "height:75px;"
-      title.innerHTML = `<b>${data.category}</b><a>${data.topic}</a>`;
-      quizModal.appendChild(title);
-
-      const quizHeader = document.getElementById("quizHeader");
-      quizHeader.innerHTML = `${selectedSubject} → ${selectedCategory} → ${selectedTopic}`;
-      quizHeader.style = "font: 2em sans-serif;";
-
-      data.questions.forEach((q, i) => {
-        const box = document.createElement("div");
-        box.className = "tile ";
-        box.value = i
-        box.id = 'q0'+(i + 1)
-        box.innerHTML = `<a>Q${i + 1}</a>`
-        box.addEventListener("click", getQuestionChoice)
-        quizModal.appendChild(box);
-      });
-
-    };
-
-    function loadQuizModal(data){
-  // default display here
-        console.log("loadQuizModal() data = ", data);
-        // qdata = data;
-        // const quizHeader = document.getElementById("quizHeader");
+        console.log("loadQuizModal() data = ", appState.quiz);
         const quizModal = document.getElementById("quizModal");
         document.getElementById("questionModal").innerHTML = "";
         quizModal.innerHTML = "";
@@ -248,19 +125,17 @@ function loadSubjectDropdown() {
         const title = document.createElement("div");
         title.id = 'quiz#0';
         title.className = "tile title default-title";
-        // title.style = "height:75px;"
-        // load global vars
-        selectedCategory = data.category;
-        selectedTopic = data.topic;
-        title.innerHTML = `<b>${selectedCategory}</b><a>${selectedTopic}</a>`;
+        const selectedCategory = appState.category;
+        const selectedTopic = appState.quiz.topic;
+        title.innerHTML = `<b>${appState.category}</b><a>${appState.quiz.topic}</a>`;
         
         quizModal.appendChild(title);
         document.getElementById("categoryModal").style = "display: none;";
         quizModal.style = "display: block;"
-        quizHeader.innerHTML = `${selectedSubject} → ${selectedCategory} → ${selectedTopic}`;
+        quizHeader.innerHTML = `${appState.subject} → ${appState.category} → ${appState.quiz.topic}`;
         quizHeader.style = "font: 2em sans-serif;";
 
-        data.questions.forEach((q, i) => {
+        appState.quiz.questions.forEach((q, i) => {
             const box = document.createElement("div");
             box.className = "tile ";
             box.value = i
@@ -270,33 +145,6 @@ function loadSubjectDropdown() {
             quizModal.appendChild(box);
         });
     };
-
-    function activateRandomButton(){
-      const randombtn = document.getElementById("randombtn");
-      randombtn.onclick = () => { loadRandomQuiz()
-      }
-    };
-
-    async function loadRandomQuiz() {
-      const res = await fetch("/api/random_quiz");
-      const data = await res.json();
-      console.log("loadRandomQuiz() data = ",data);
-      qdata = data;
-      rdata = data;
-      loadQuizModal(data);
-    }
-
-  async function loadSelectQuizBySubject(subject) {
-      const res = await fetch(`/api/single_quiz_by_subject/${encodeURIComponent(subject)}`);
-      const data = await res.json();
-      loadQuizModal(data);
-  }
-
-  async function loadSelectQuiz(category) {
-      const res = await fetch(`/api/single_quiz_by_category/${encodeURIComponent(category)}`);
-      const data = await res.json();
-      loadQuizModal(data);
-  }
 
 async function sha256(str) {
   const utf8 = new TextEncoder().encode(str);
@@ -311,28 +159,28 @@ async function sha256(str) {
     const questionModal = document.getElementById("questionModal");
     const pointsBox = document.getElementById("pointsBox");
     pointsBox.innerText = 5;
-    // quizModal.style = "display: none;";
     questionModal.style = "display: block;";
     console.log("val = ", val);
     console.log("val (target) id = ", val.target.id);
     qchoice = val.target.id
-    console.log("qdata.questions = ", qdata);
-    console.log("qdata.questions[val.target.value].question = ", qdata.questions[val.target.value]);
+    console.log("appState.quiz.topic = ", appState.quiz.topic);
+    console.log("appState.quiz.topic.questions = ", appState.quiz.questions);
+    console.log("appState.quiz.topic.questions[val.target.value].question = ", appState.quiz.questions[val.target.value].question);
     const qtitle = document.createElement("div");
     qtitle.className = "tile title default-title";
     qtitle.id = 'q0';
-    qtitle.innerHTML = `<a>${qdata.questions[val.target.value].question}</a>`
+    qtitle.innerHTML = `<a>${appState.quiz.questions[val.target.value].question}</a>`
     questionModal.innerHTML="";
     questionModal.appendChild(qtitle);
 
-    qdata.questions[val.target.value].choices.forEach(choice => {
-          console.log("qdata.questions[val.target.value].answer_hash = ", qdata.questions[val.target.value].answer_hash);
+    appState.quiz.questions[val.target.value].choices.forEach(choice => {
+          console.log("appState.quiz.questions[val.target.value].answer_hash = ", appState.quiz.questions[val.target.value].answer_hash);
           const atile = document.createElement("div");
           atile.innerText = choice;
           atile.className = "tile a-tile";
           atile.onclick = async () => {
               const userHash = await sha256(choice);
-              if (userHash === qdata.questions[val.target.value].answer_hash ){
+              if (userHash === appState.quiz.questions[val.target.value].answer_hash ){
                   atile.style = "background-color: green;"
                   document.getElementById(val.target.id).style = "background-color: green;"
                   let score = document.getElementById("scoreBox").innerText
@@ -352,18 +200,16 @@ async function sha256(str) {
                   points = Number(points);
                   points -= 2;
                   score += points
-                  // document.getElementById("scoreBox").innerText = score
                   document.getElementById("pointsBox").innerText = points
               }
 
-              alert(userHash === qdata.questions[val.target.value].answer_hash ? "✅ Correct" : "❌ Incorrect");
+              alert(userHash === appState.quiz.questions[val.target.value].answer_hash ? "✅ Correct" : "❌ Incorrect");
           };
           questionModal.appendChild(atile);
         });
           const etile = document.createElement("div");
           etile.id = "explainTile";
           etile.className = "tile etile";
-          //console.log("qdata.questions[val.target.value].explanation = ",qdata.questions[val.target.value].explanation);
           etile.innerText = "Hint";
           etile.onclick = () => {
             getHint()
