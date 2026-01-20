@@ -33,19 +33,19 @@ function selectSubject(subject) {
   currentMode = UI_MODE.CATEGORY;
 }
 
-async function selectCategory(category) {
-  appState.category = category;
+// async function selectCategory(category) {
+//   appState.category = category;
 
-  const res = await fetch(
-    `/api/single_quiz_by_category/${encodeURIComponent(category)}`
-  );
-  appState.quiz = await res.json();
+//   const res = await fetch(
+//     `/api/single_quiz_by_category/${encodeURIComponent(category)}`
+//   );
+//   appState.quiz = await res.json();
 
-  renderQuizPanel();
-  setHeader();
+//   renderQuizPanel();
+//   setHeader();
 
-  currentMode = UI_MODE.QUIZ;
-}
+//   currentMode = UI_MODE.QUIZ;
+// }
 
 async function loadSubjectButtons() {
     console.log("loadSubjectPanel() >>> data = ", appState.subjects);
@@ -76,7 +76,7 @@ async function selectCategory(event) {
     `/api/single_quiz_by_category/${encodeURIComponent(appState.category)}`
   );
   appState.quiz = await res.json();
-
+  appState.topic = appState.quiz.topic;
   loadQuizModal();
   setHeader();
 
@@ -110,9 +110,8 @@ function loadCategoryPanel(){
 
       function setHeader(){
         const quizHeader = document.getElementById("quizHeader");
-        quizHeader.innerHTML = `${selectedSubject} → ${selectedCategory} → ${selectedTopic}`;
-        quizHeader.style = "font: 2em sans-serif;";
-        // subjectSelect.dispatchEvent(new Event("change"));
+        quizHeader.innerHTML = `${appState.subject} → ${appState.category} → ${appState.topic}`;
+        quizHeader.style = "font: 1em sans-serif;";
       }
 
     function loadQuizModal(){
