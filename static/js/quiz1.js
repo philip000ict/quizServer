@@ -120,8 +120,8 @@ function loadSubjectPanel(){
 
 async function loadSubjectButtons() {
     // console.log("loadSubjectPanel() >>> data = ", appState.subjects);
-    const subjectBanner = document.getElementById("carousel-wrapper");
-    const buttonPanel = document.getElementById("carousel");
+    const subjectBanner = document.getElementById("subjectBanner");
+    const buttonPanel = document.getElementById("buttonPanel");
     const leftNav = document.getElementById("leftNav");
     const rightNav = document.getElementById("rightNav");
     // leftNav.innerText = "L";
@@ -138,12 +138,11 @@ async function loadSubjectButtons() {
           buttonPanel.appendChild(subjectButton);
         };
       }
-    // buttonPanel.innerHTML += buttonPanel.innerHTML;
-    subjectBanner.appendChild(leftNav);
-    subjectBanner.appendChild(buttonPanel);
-    subjectBanner.appendChild(rightNav);
-    carousel();
-  };
+      subjectBanner.appendChild(leftNav);
+      subjectBanner.appendChild(buttonPanel);
+      subjectBanner.appendChild(rightNav);
+
+    };
 
 function onchangeSubjectSelect(event){ 
     console.log(`The selected event =  ${event.target.id}`);

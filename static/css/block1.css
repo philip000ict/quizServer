@@ -220,7 +220,7 @@ section {
   display:block;
   background-color: #f4f4f4;
   border: 3px solid slateblue;
-  /* box-shadow: 10px 10px 10px darkslategrey; */
+  box-shadow: 10px 10px 10px darkslategrey;
   border-radius: 10px;
   /* font: 1em sans-serif;
   line-height: 20px; */

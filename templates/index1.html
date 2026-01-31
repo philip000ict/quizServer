@@ -3,11 +3,9 @@
 <head>
   <title>Quiz Selection</title>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/block.css') }}">
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/carousel.css') }}">
   <script>const STATIC_IMG_BASE = "{{ url_for('static', filename='img/') }}";</script>
   <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
   <script src = "{{ url_for('static', filename='js/quiz.js') }}"></script>
-  <script src = "{{ url_for('static', filename='js/carousel.js') }}"></script>
   <script>  </script>
 </head>
 <body>
@@ -22,22 +20,11 @@
 
         <div id="google_translate_element"></div>
               <!-- Button block 2 -->
-        <!-- <div id = "subjectBanner" class = "banner">
+        <div id = "subjectBanner" class = "banner">
           <div id = "leftNav" class = "navBtn">&#9664;</div>
             <div id="buttonPanel" class="btnBlock">
             </div> 
           <div id = "rightNav" class = "navBtn">&#9654;</div>
-        </div> -->
-
-        <div id="carousel-wrapper" class="carousel-wrapper">
-          <button class="navBtn left" id="leftNav">&#9664;</button>
-
-          <div class="carousel" id="carousel">
-            <!-- Items will be duplicated automatically for looping -->
-
-          </div>
-
-          <button class="navBtn right" id="rightNav">&#9654;</button>
         </div>
 
                <!-- Button block 3 -->
