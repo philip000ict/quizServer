@@ -26,7 +26,7 @@ def index():
 def get_subjects():
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT DISTINCT subject, category FROM history_quiz ORDER BY subject, category")
+    cursor.execute("SELECT DISTINCT subject, category FROM ancient_quiz ORDER BY subject, category")
     rows = cursor.fetchall()
     cursor.close()
     conn.close()
@@ -49,21 +49,21 @@ def random_quiz():
     cursor = conn.cursor(dictionary=True)
 
     # Step 0: Get random subject
-    cursor.execute("SELECT DISTINCT subject FROM history_quiz ORDER BY RAND() LIMIT 1")
+    cursor.execute("SELECT DISTINCT subject FROM ancient_quiz ORDER BY RAND() LIMIT 1")
     subject = cursor.fetchone()["subject"]
 
     # Step 1: Get random category
-    cursor.execute("SELECT DISTINCT category FROM history_quiz WHERE subject = %s  ORDER BY RAND() LIMIT 1", (subject,))
+    cursor.execute("SELECT DISTINCT category FROM ancient_quiz WHERE subject = %s  ORDER BY RAND() LIMIT 1", (subject,))
     category = cursor.fetchone()["category"]
     # print("category = ". category  )
     # Step 2: Get random topic from that category
-    cursor.execute("SELECT DISTINCT topic FROM history_quiz WHERE category = %s ORDER BY RAND() LIMIT 1", (category,))
+    cursor.execute("SELECT DISTINCT topic FROM ancient_quiz WHERE category = %s ORDER BY RAND() LIMIT 1", (category,))
     topic = cursor.fetchone()["topic"]
 
     # Step 3: Get 6 random questions
     cursor.execute("""
         SELECT question, correct_choice, distractor1, distractor2, distractor3, explanation
-        FROM history_quiz 
+        FROM ancient_quiz 
         WHERE subject = %s AND category = %s AND topic = %s
         ORDER BY RAND() 
         LIMIT 6
@@ -98,18 +98,18 @@ def single_quiz_by_subject(subject):
     cursor = conn.cursor(dictionary=True)
 
     # Step 1: Get random subject
-    # cursor.execute("SELECT DISTINCT subject FROM history_quiz ORDER BY RAND() LIMIT 1")
+    # cursor.execute("SELECT DISTINCT subject FROM ancient_quiz ORDER BY RAND() LIMIT 1")
     # subject = cursor.fetchone()["subject"]
     # print("subject = ". subject  )
     # Step 2: Get random topic from that subject
-    cursor.execute("SELECT DISTINCT category FROM history_quiz WHERE subject = %s ORDER BY RAND() LIMIT 1", (subject,))
+    cursor.execute("SELECT DISTINCT category FROM ancient_quiz WHERE subject = %s ORDER BY RAND() LIMIT 1", (subject,))
     category = cursor.fetchone()["category"]
     return category
 
     # # Step 3: Get 6 random questions
     # cursor.execute("""
     #     SELECT question, correct_choice, distractor1, distractor2, distractor3, explanation
-    #     FROM history_quiz 
+    #     FROM ancient_quiz 
     #     WHERE subject = %s AND category = %s
     #     ORDER BY RAND() 
     #     LIMIT 6
@@ -137,35 +137,35 @@ def single_quiz_by_subject(subject):
     #     "questions": questions
     # })
 
-@app.route("/api/single_quiz_by_category/<category>")
-def single_quiz_by_category(category):
+@app.route("/api/single_quiz_by_category/<subject>,<category>")
+def single_quiz_by_category(subject, category):
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
 
-    # Step 1: Get random category
-    # cursor.execute("SELECT DISTINCT category FROM history_quiz ORDER BY RAND() LIMIT 1")
-    # category = cursor.fetchone()["category"]
-    # print("category = ". category  )
+    # Step 1: Get subject, category
+
     # Step 2: Get random topic from that category
-    cursor.execute("SELECT DISTINCT topic FROM history_quiz WHERE category = %s ORDER BY RAND() LIMIT 1", (category,))
+    cursor.execute("SELECT DISTINCT topic FROM ancient_quiz WHERE subject = %s AND category = %s ORDER BY RAND() LIMIT 1", (subject, category))
     topic = cursor.fetchone()["topic"]
 
     # Step 3: Get 6 random questions
     cursor.execute("""
-        SELECT question, correct_choice, distractor1, distractor2, distractor3, explanation
-        FROM history_quiz 
-        WHERE category = %s AND topic = %s
+        SELECT id, question, correct_choice, distractor1, distractor2, distractor3, explanation
+        FROM ancient_quiz 
+        WHERE subject = %s AND category = %s AND topic = %s
         ORDER BY RAND() 
         LIMIT 6
-    """, (category, topic))
+    """, (subject, category, topic))
 
     questions = []
     for row in cursor.fetchall():
+        question_id = row["id"]
         choices = [row["correct_choice"], row["distractor1"], row["distractor2"], row["distractor3"]]
         random.shuffle(choices)
         correct_hash = hashlib.sha256(row["correct_choice"].encode()).hexdigest()
         # explanation_hash = hash_answer(row["explanation"])
         questions.append({
+            "question_id": question_id,
             "question": row["question"],
             "choices": choices,
             "answer_hash": correct_hash
@@ -181,16 +181,16 @@ def single_quiz_by_category(category):
         "questions": questions
     })
 
-@app.route("/api/quiz_by_category/<category>")
-def get_quiz_by_category(category):
+@app.route("/api/quiz_by_category/<subject>, <category>")
+def get_quiz_by_category(subject, category):
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
 
     # Get 4 random topics from category
     cursor.execute("""
         SELECT DISTINCT topic 
-        FROM history_quiz
-        WHERE category = %s 
+        FROM ancient_quiz
+        WHERE subject = %s AND category = %s 
         ORDER BY RAND() 
         LIMIT 4
     """, (category,))
@@ -201,7 +201,7 @@ def get_quiz_by_category(category):
     for topic in topics:
         cursor.execute("""
             SELECT question, correct_choice, distractor1, distractor2, distractor3, explanation
-            FROM history_quiz
+            FROM ancient_quiz
             WHERE category = %s AND topic = %s 
             ORDER BY RAND() 
             LIMIT 6
@@ -224,10 +224,61 @@ def get_quiz_by_category(category):
     conn.close()
     return jsonify(results)
 
-@app.route("/api/getHint")
-def getHint():
-    data = {"hint":"Dunno Mate!"}
-    return jsonify(data)
+@app.route("/api/getHint/<question_id>")
+def getHint(question_id):
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # Step 1: Get subject, category
+
+    # Step 2: Get explanation from that subject, category, topic, question
+    # cursor.execute("SELECT DISTINCT topic FROM ancient_quiz WHERE subject = %s AND category = %s ORDER BY RAND() LIMIT 1", (subject, category, topic, question))
+    # explanation = cursor.fetchone()["explanation"]
+
+    # # Step 3: Get 6 random questions
+    cursor.execute("""
+        SELECT explanation
+        FROM ancient_quiz 
+        WHERE id = %s
+        """, (question_id,))
+        
+    result = cursor.fetchone()
+    if result:
+        explanation = result[0]
+        print(explanation)
+    else:
+        explanation = "Nada, no habla Espagnol"
+        print(explanation)
+    # data = {"hint":"Dunno Mate!"}
+    cursor.close()
+    conn.close()
+
+    return jsonify({"explanation": explanation})
+
+# @app.route("/api/getHint/<subject>, <category>, <topic>, <question>")
+# def getHint(subject, category, topic, question):
+#     conn = get_db()
+#     cursor = conn.cursor(dictionary=True)
+
+#     # Step 1: Get subject, category
+
+#     # Step 2: Get explanation from that subject, category, topic, question
+#     # cursor.execute("SELECT DISTINCT topic FROM ancient_quiz WHERE subject = %s AND category = %s ORDER BY RAND() LIMIT 1", (subject, category, topic, question))
+#     # explanation = cursor.fetchone()["explanation"]
+
+#     # # Step 3: Get 6 random questions
+#     cursor.execute("""
+#         SELECT explanation
+#         FROM ancient_quiz 
+#         WHERE subject = %s AND category = %s AND topic = %s AND question = %s
+#         """, (subject, category, topic, question))
+
+#     explanation = cursor.fetchone()["explanation"]
+#     # data = {"hint":"Dunno Mate!"}
+#     cursor.close()
+#     conn.close()
+
+#     return jsonify({"explanation": explanation})
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)

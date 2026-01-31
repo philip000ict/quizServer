@@ -23,7 +23,7 @@ def quiz_data():
     cursor = conn.cursor(dictionary=True)
     cursor.execute("""
         SELECT subject, category, topic
-        FROM history_quiz
+        FROM ancient_quiz
         ORDER BY subject;
     """)
     # cursor.execute("""

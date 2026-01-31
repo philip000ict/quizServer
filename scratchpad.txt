@@ -1,0 +1,35 @@
+magick Sport.png \
+  -resize 1024x1024 \
+  -background none \
+  -gravity center \
+  -extent 1024x1024 \
+  -quality 85 \
+  Sport.webp
+
+  convert MotorRacing.png   -gravity center  -crop 533x533+0+0 -resize 1024x1024 MotorRacing.webp
+
+
+
+  The Adventus Saxonum (Germanic Migration/Settlement): The arrival of Angles, Saxons, and Jutes from northern Europe after the withdrawal of the Romans.
+The Heptarchy and Early Kingdoms: The formation of the seven distinct, warring kingdoms: Northumbria, Mercia, Wessex, Sussex, Kent, Essex, and East Anglia.
+Conversion to Christianity: The movement from paganism to Christianity, driven by missionaries like Augustine of Canterbury, and the founding of monasteries.
+Anglo-Saxon Society and Hierarchy: The social structure, including the king, eorls (nobles), thegns (warriors), ceorls (freemen), and slaves.
+Daily Life and Farming: Agrarian life, settlement types (sunken-featured buildings), diet, and the importance of farming for survival.
+Art and Metalwork (Sutton Hoo): The development of unique artistic styles, including intricate metalwork, jewelry, and the Sutton Hoo ship burial.
+Old English Literature and Poetry: The tradition of oral storytelling, epic poetry (e.g., Beowulf), and elegies from the Vercelli Book and Exeter Book.
+The Viking Invasions and the Danelaw: The arrival of Vikings, the fall of Anglo-Saxon kingdoms, and the establishment of Danish law in eastern England.
+Alfred the Great and the Rise of Wessex: The defense against the Vikings, the creation of burhs (fortified towns), and the, promotion of learning.
+The Unification of England: The creation of a single English kingdom, beginning with the efforts of Alfred and completed by kings like Athelstan.
+Anglo-Saxon Law and Government: The development of shires, hundreds, and the Witan (council) to govern and manage justice.
+The End of the Period (1066): The death of Edward the Confessor, the struggle for the throne, and the Norman Conquest. 
+
+The Adventus Saxonum; Germanic Settlement
+The Heptarchy and Early Kingdoms
+Daily Life and Farming
+Art and Metalwork; Sutton Hoo
+Old English Literature and Poetry
+The Viking Invasions and the Danelaw
+Alfred the Great and the Rise of Wessex
+The Unification of England: The creation of a single English kingdom, beginning with the efforts of Alfred and completed by kings like Athelstan.
+Anglo-Saxon Law and Government: The development of shires, hundreds, and the Witan (council) to govern and manage justice.
+

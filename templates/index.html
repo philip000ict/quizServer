@@ -10,7 +10,7 @@
 </head>
 <body>
   <div id="wrapper"> 
-    <header>Select Quiz Topic</header>
+    <header>Ancient Civilisations Quiz Browser <a style = "font-size: small ;">from cv3tech.com</a></header>
 
             <!-- Container for Button-Widget Grid and Info-Panel  -->
     <div id ="container">    
@@ -18,7 +18,7 @@
       <section><!-- Section for Button and Widget Panel -->
           <!-- Container for Button and Widget Panel -->
 
-        
+        <div id="google_translate_element"></div>
               <!-- Button block 2 -->
         <div id="buttonPanel" class="btnBlock">
         </div> 
@@ -41,23 +41,30 @@
 
       <section> <!-- Section for Quiz Panel Container  -->
 
-        <header id = "quizHeader">Random Quiz</header>
+        
         <div id ="panelBlock" class = "gridContainer">
-          <!-- <div id ="categoryPanel" class = "topic-panel"> -->
+          <div id ="modalContainer" class = "panelBox">
+            <header id = "quizHeader">Random Quiz</header>
+            <div id ="subjectModal" class = "quizBlock"></div>
+            <div id ="categoryModal" class = "quizBlock"></div>
+            <div id ="questionModal" class = "quizBlock"></div>  
 
             <!-- Quiz Panels -->
-            <div id ="quizModal" class="quizBlock"></div> 
-            <div id ="randomQuizModal" class="randomQuizBlock"></div> 
-            <div id ="categoryModal" class = "quizBlock"></div>
-            <div id ="questionModal" class = "quizBlock"></div> 
+            <div id ="quizModal" class="quizBlock">
+                <div id ="answerPanel" class = "panel"></div> 
+                <div id ="hintPanel" class = "panel"></div> 
+                <div id ="checkPanel" class = "panel"></div> 
+            </div>
+            <!-- <div id ="hintPanel" class="quizBlock"></div> -->
+          </div>   
+            <!-- <div id ="randomQuizModal" class="randomQuizBlock"></div>  -->
+            
 
             <div id ="imageContainer" class="quizBlock">
               <div id = "subjectImage" class = "imgPanel">
                 <img src = "{{ url_for('static', filename='img/default.webp') }}" alt = "QuizBrowser image blending topics on historical subjects into a unified and interactive quiz setting.">
               </div>  
             </div> 
-
-          </div>
         </div>
 
       </section>
