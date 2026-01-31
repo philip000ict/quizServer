@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 app = Flask(__name__, template_folder='templates')
-
+db_table = 'ancient_quiz'
 def get_db():
     return mysql.connector.connect(
         host=os.getenv("MYSQL_HOST"),
@@ -26,7 +26,7 @@ def index():
 def get_subjects():
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT DISTINCT subject, category FROM ancient_quiz ORDER BY subject, category")
+    cursor.execute(f"SELECT DISTINCT subject, category FROM {db_table} ORDER BY subject, category")
     rows = cursor.fetchall()
     cursor.close()
     conn.close()
@@ -49,21 +49,21 @@ def random_quiz():
     cursor = conn.cursor(dictionary=True)
 
     # Step 0: Get random subject
-    cursor.execute("SELECT DISTINCT subject FROM ancient_quiz ORDER BY RAND() LIMIT 1")
+    cursor.execute(f"SELECT DISTINCT subject FROM {db_table} ORDER BY RAND() LIMIT 1")
     subject = cursor.fetchone()["subject"]
 
     # Step 1: Get random category
-    cursor.execute("SELECT DISTINCT category FROM ancient_quiz WHERE subject = %s  ORDER BY RAND() LIMIT 1", (subject,))
+    cursor.execute(f"SELECT DISTINCT category FROM {db_table} WHERE subject = %s  ORDER BY RAND() LIMIT 1", (subject,))
     category = cursor.fetchone()["category"]
     # print("category = ". category  )
     # Step 2: Get random topic from that category
-    cursor.execute("SELECT DISTINCT topic FROM ancient_quiz WHERE category = %s ORDER BY RAND() LIMIT 1", (category,))
+    cursor.execute(f"SELECT DISTINCT topic FROM {db_table} WHERE category = %s ORDER BY RAND() LIMIT 1", (category,))
     topic = cursor.fetchone()["topic"]
 
     # Step 3: Get 6 random questions
-    cursor.execute("""
+    cursor.execute(f"""
         SELECT question, correct_choice, distractor1, distractor2, distractor3, explanation
-        FROM ancient_quiz 
+        FROM {db_table} 
         WHERE subject = %s AND category = %s AND topic = %s
         ORDER BY RAND() 
         LIMIT 6
@@ -102,7 +102,7 @@ def single_quiz_by_subject(subject):
     # subject = cursor.fetchone()["subject"]
     # print("subject = ". subject  )
     # Step 2: Get random topic from that subject
-    cursor.execute("SELECT DISTINCT category FROM ancient_quiz WHERE subject = %s ORDER BY RAND() LIMIT 1", (subject,))
+    cursor.execute(f"SELECT DISTINCT category FROM {db_table} WHERE subject = %s ORDER BY RAND() LIMIT 1", (subject,))
     category = cursor.fetchone()["category"]
     return category
 
@@ -145,13 +145,13 @@ def single_quiz_by_category(subject, category):
     # Step 1: Get subject, category
 
     # Step 2: Get random topic from that category
-    cursor.execute("SELECT DISTINCT topic FROM ancient_quiz WHERE subject = %s AND category = %s ORDER BY RAND() LIMIT 1", (subject, category))
+    cursor.execute(f"SELECT DISTINCT topic FROM {db_table} WHERE subject = %s AND category = %s ORDER BY RAND() LIMIT 1", (subject, category))
     topic = cursor.fetchone()["topic"]
 
     # Step 3: Get 6 random questions
-    cursor.execute("""
+    cursor.execute(f"""
         SELECT id, question, correct_choice, distractor1, distractor2, distractor3, explanation
-        FROM ancient_quiz 
+        FROM {db_table} 
         WHERE subject = %s AND category = %s AND topic = %s
         ORDER BY RAND() 
         LIMIT 6
@@ -187,9 +187,9 @@ def get_quiz_by_category(subject, category):
     cursor = conn.cursor(dictionary=True)
 
     # Get 4 random topics from category
-    cursor.execute("""
+    cursor.execute(f"""
         SELECT DISTINCT topic 
-        FROM ancient_quiz
+        FROM {db_table}
         WHERE subject = %s AND category = %s 
         ORDER BY RAND() 
         LIMIT 4
@@ -199,9 +199,9 @@ def get_quiz_by_category(subject, category):
     # For each topic, get 6 random questions
     results = {}
     for topic in topics:
-        cursor.execute("""
+        cursor.execute(f"""
             SELECT question, correct_choice, distractor1, distractor2, distractor3, explanation
-            FROM ancient_quiz
+            FROM {db_table}
             WHERE category = %s AND topic = %s 
             ORDER BY RAND() 
             LIMIT 6
@@ -236,9 +236,9 @@ def getHint(question_id):
     # explanation = cursor.fetchone()["explanation"]
 
     # # Step 3: Get 6 random questions
-    cursor.execute("""
+    cursor.execute(f"""
         SELECT explanation
-        FROM ancient_quiz 
+        FROM {db_table} 
         WHERE id = %s
         """, (question_id,))
         
