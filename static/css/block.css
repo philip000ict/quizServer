@@ -207,25 +207,33 @@ section {
     flex-direction: row;
     justify-content:center;
 }
-.btnImg{
+/* .btnImg{
   width: 70px;
   height: 70px;
   border-radius: 7px;
   object-fit: fill;
-}
+} */
 .subjectbtn{
-  width: 70px;
-  height: 70px;
+  width: 85px;
+  /* height: 85px; */
   text-align: center;
   display:block;
-  background-color: #f4f4f4;
-  border: 3px solid slateblue;
+  /* background-color: #f4f4f4; */
+  
   /* box-shadow: 10px 10px 10px darkslategrey; */
-  border-radius: 10px;
+  /* border-radius: 10px; */
   /* font: 1em sans-serif;
   line-height: 20px; */
   margin: 10px;
   cursor: pointer;
+}
+.subjectbtn img {
+  border: 3px solid slateblue;
+  border-radius: 7px;
+  object-fit: fill;
+}
+.subjectText{
+  font: 0.7em sans-serif;
 }
 .panelbtn{
   width: 95%;

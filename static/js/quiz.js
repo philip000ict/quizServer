@@ -129,11 +129,15 @@ async function loadSubjectButtons() {
     if (appState.subjects) {
         for (let subject in appState.subjects) {
           const subjectButton = document.createElement("div");
+          const subjectText = document.createElement("div");
+          subjectText.innerHTML = "<div class = 'subjectText'>"+subject.replace(/^\S+\s*/, '')+"</div>";
+          // subjectText.innerHTML = "<div class = 'subjectText'>"+subject.split(' ').slice(1).join(' ')+"</div>";
           const subjectImg = "subjectBtn/"+subject.replaceAll(" ", "") + "_btn.webp";
           subjectButton.id = subject;
           subjectButton.innerText = subject;
           subjectButton.className = "subjectbtn";
           subjectButton.innerHTML = `<img id = "${subject}" class = "btnImg" src="${STATIC_IMG_BASE}${subjectImg}" alt="${subject}">`;
+          subjectButton.appendChild(subjectText)
           subjectButton.addEventListener('click', onchangeSubjectSelect);
           buttonPanel.appendChild(subjectButton);
         };
