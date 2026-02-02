@@ -11,6 +11,13 @@ background-color: lightblue;
 margin: auto;
 /* padding: 5px; */
 }
+h1{
+  text-align: center;
+}
+.textBlock{
+  text-align: center;
+  margin: 15px;
+}
 header {
   /* background-color: #f4f4f4; */
   color: slategrey;
@@ -50,8 +57,10 @@ section {
   width: 80%;
 }
 
-.quizBlock{
-  height: 600px;
+.tilePanel{
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
 }
 #categoryPanel {
   height: 75vh;
@@ -83,6 +92,7 @@ section {
   background-color: blanchedalmond;
   padding-bottom: 5px;
   margin: 5px;
+  position: relative;
 }
 .imgPanel img{
   width: 45vw;
@@ -101,12 +111,30 @@ section {
   font: 1.5em sans-serif;
   color: aliceblue;
   background-color: royalblue;
+  border: solid 3px darkblue;
+  border-radius: 10px;
   margin: 10px auto;
   font-weight: bold;
   text-align: center;
   padding: 5px;
 }
+.tile p {
+  font: 0.8em sans-serif;
+  margin: 10px 0 5px 0;
+}
+.tile a.question {
+  background-color: darkblue;
+  border: solid 3px lightskyblue;
+  border-radius: 10px;
+  margin: 5px;
+  font: 0.6em sans-serif;
+  padding: 10px;
+}
+.tile.big{
+  height: auto;
+}
 .title {
+  background-color: darkblue;
   cursor: not-allowed;
   height: auto;
   font: 1.8em sans-serif;
@@ -161,12 +189,12 @@ section {
 #defaultQuizContainer{
   display: block;
 }
-#questionModal{
+/* #questionModal{
   display: none;
   /* width: 45vw; */
-  max-width: 533px;
+  /* max-width: 533px;
   background-color: aquamarine;
-}
+} */ 
 
 #quizModal{
   display: none;
@@ -236,7 +264,7 @@ section {
   font: 0.7em sans-serif;
 }
 .panelbtn{
-  width: 95%;
+  width: 94%;
   /* max-width: 250px; */
   height: 50px;
   text-align: center;
@@ -247,8 +275,10 @@ section {
   border-radius: 15px;
   font: 1em sans-serif;
   line-height: 20px;
-  margin: auto;
+  margin: 3%;
   cursor: pointer;
+  position: absolute;
+  bottom: 0;
 }
 .navBtn{
   margin: 20px;
@@ -262,7 +292,7 @@ section {
   font: 4em sans-serif;
   font-weight: bold;
   text-align: center;
-  line-height: 70px;
+  padding-bottom: 35px;
 }
 .btnDiv{
    background-color: blanchedalmond;
@@ -352,13 +382,17 @@ section {
   @media screen and (max-width: 750px) {
 
 .imgPanel img{
-  width: 80vw;
+  width: 100%;
+  max-width: 100vw;
   object-fit: contain;
 }
-
+.panelBox{
+  width: 100%;
+}
 .quizBlock{
     margin: auto;
-    width: 80vw;
+    width: 100%;
+    max-width: 100%;
 } 
 .gridContainer {
   display: flex;
@@ -386,7 +420,7 @@ section {
     flex-direction: column;
     }
   .panelbtn{
-    width: 40vw;
+    width: 94%;
     /* margin: 10px 5vw; */
     overflow: hidden;
   }

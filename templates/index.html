@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Quiz Selection</title>
+  <title>Quiz Server</title>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/block.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/carousel.css') }}">
   <script>const STATIC_IMG_BASE = "{{ url_for('static', filename='img/') }}";</script>
@@ -12,7 +12,7 @@
 </head>
 <body>
   <div id="wrapper"> 
-    <header>Ancient Civilisations Quiz Browser <a style = "font-size: small ;">from cv3tech.com</a></header>
+    <header id = "pageTitle">Ancient Civilisations<a style = "font-size: small ;"> &nbsp; Quiz Server from cv3tech.com</a></header>
 
             <!-- Container for Button-Widget Grid and Info-Panel  -->
     <div id ="container">    
@@ -20,23 +20,11 @@
       <section><!-- Section for Button and Widget Panel -->
           <!-- Container for Button and Widget Panel -->
 
-        <div id="google_translate_element"></div>
-              <!-- Button block 2 -->
-        <!-- <div id = "subjectBanner" class = "banner">
-          <div id = "leftNav" class = "navBtn">&#9664;</div>
-            <div id="buttonPanel" class="btnBlock">
-            </div> 
-          <div id = "rightNav" class = "navBtn">&#9654;</div>
-        </div> -->
+        <!-- <div id="google_translate_element"></div> -->
 
         <div id="carousel-wrapper" class="carousel-wrapper">
           <button class="navBtn left" id="leftNav">&#9664;</button>
-
-          <div class="carousel" id="carousel">
-            <!-- Items will be duplicated automatically for looping -->
-
-          </div>
-
+          <div class="carousel" id="carousel"></div>
           <button class="navBtn right" id="rightNav">&#9654;</button>
         </div>
 
@@ -57,20 +45,15 @@
 
       <section> <!-- Section for Quiz Panel Container  -->
 
-        <header id = "quizHeader">Random Quiz</header>
+        <header id = "quizHeader"></header>
         <div id ="panelBlock" class = "gridContainer">
           <div id ="modalContainer" class = "panelBox">
             
             <div id ="subjectModal" class = "quizBlock"></div>
             <div id ="categoryModal" class = "quizBlock"></div>
             <div id ="questionModal" class = "quizBlock"></div>  
-
-            <!-- Quiz Panels -->
-            <div id ="quizModal" class="quizBlock">
-                <div id ="answerPanel" class = "panel"></div> 
-                <div id ="hintPanel" class = "panel"></div> 
-                <div id ="checkPanel" class = "panel"></div> 
-            </div>
+            <div id ="quizModal" class="quizBlock"></div>
+            <div id ="answerModal" class = "quizBlock"></div>
             <!-- <div id ="hintPanel" class="quizBlock"></div> -->
           </div>   
             <!-- <div id ="randomQuizModal" class="randomQuizBlock"></div>  -->

@@ -14,24 +14,37 @@ const appState = {
   quiz: null,
   select_question: null,
   select_question_id: null,
+  select_answer_hash: null,
   select_hint: null,
-  points: 0,
-  score: 0
+  select_answer: null,
+  selectAnswer_id: null
 };
-
 // function googleTranslateElementInit() {
 //     new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
 //   }
-
 async function init() {
   const res = await fetch("/api/subjects");
   appState.subjects = await res.json();
   // createDivs();
   transitionTo("subject");
+  resetAppState("subject");
   loadSubjectButtons();
   loadSubjectPanel();
 }
+function resetAppState(state) {
+  console.log("resetAppState(state) = ",state);
+  appState.subject = null;
+  appState.category = null;
+  appState.topic = null;
+  appState.quiz = null;
+  appState.select_question = null;
+  appState.select_question_id = null;
+  appState.select_hint = null;
+  appState.select_answer = null;
+  appState.selectAnswer_id = null;
 
+  // currentMode = UI_MODE.subject;
+}
 function selectSubject(subject) {
   appState.subject = subject;
   appState.category = null;
@@ -39,54 +52,65 @@ function selectSubject(subject) {
   appState.quiz = null;
 
   renderCategoryPanel();
-
-  currentMode = UI_MODE.CATEGORY;
+  // currentMode = UI_MODE.CATEGORY;
 }
 const panels = {
   subject: "subjectModal",
   category: "categoryModal",
-  quiz: "quizModal",
   question: "questionModal",
-  answer: "answerPanel",
-  hint: "hintPanel",
-  check: "checkPanel"
+  quiz: "quizModal",
+  // check: "checkModal",
+  answer: "answerModal",
+  // hint: "hintPanel",
+  // tile: "tilePanel"
 };
 //Panel state switchers helper functions
 function show(panel) {
   console.log("panel = ", panel);
   if (panel) document.getElementById(panel).style.display = "block";
 }
-
-function hide(panel) {
-  console.log("panel = ", panel);
-  if (panel) document.getElementById(panel).style.display = "none";
+function hideAll() {
+  Object.entries(panels).forEach(([key,value]) => {
+    console.log(`${key}: ${value}`);
+    document.getElementById(`${value}`).style.display = "none";
+  } )
 }
-
-function transitionTo(nextMode) {
-  if (UI_MODE === nextMode) return;
-  UI_MODE === nextMode
-  // Exit logic (cleanup per mode if needed)
-  console.log("panels.subject = ", nextMode);
-  switch (nextMode) {
+function transitionTo(mode) {
+  // if (UI_MODE === nextMode) return;
+  // UI_MODE === nextMode
+  // // Exit logic (cleanup per mode if needed)
+  console.log("transitionTo(mode) = ", mode);
+  switch (mode) {
     case "subject":
+      hideAll();
       show(panels.subject);
-      hide(panels.category);
-      hide(panels.question);
-      hide(panels.quiz);
-      hide(panels.answer);
-      hide(panels.hint);
-      hide(panels.check);
       break;
 
     case "category":
-      hide(panels.subject);
+      hideAll();
       show(panels.category);
-      hide(panels.question);
-      hide(panels.quiz);
-      hide(panels.answer);
-      hide(panels.hint);
-      hide(panels.check);
       break;
+
+    case "question":
+      hideAll();
+      show(panels.question);
+      break;
+
+    case "quiz":
+      hideAll();
+      show(panels.quiz);
+      break;
+
+    case "answer":
+      hideAll();
+      show(panels.answer);
+      break;
+
+    // case "check":
+    //   hideAll();
+    //   show(panels.check);
+    //   break;
+
   }
 
   // Update state
@@ -109,15 +133,20 @@ function transitionTo(nextMode) {
 }
 function loadSubjectPanel(){
   const subjectPanel = document.getElementById("subjectModal");
-  const subjectBlurb = "<h1>QuizBrowser App</h1>\
+  const subjectBlurb = document.createElement("div");
+  subjectBlurb.className = "tilePanel textBlock";
+  subjectBlurb.innerHTML = "<h1>Quiz Server App</h1>\
   <p>An interactive quiz engine delivering curriculum-aligned questions, instant feedback, and dynamic scoring.\
   Designed for students and teachers, it runs smoothly across devices as part of the Hydra microservice family. </p>\
-  <p> Instructions 1; Select an Ancient Civilisation from the Subject Buttons above.</p>\
-  <p> Instructions 2; Select a Subject Category from the Categories that appear here.</p>"
+  <p><b> Instructions 1; </b></p>\
+  <p> Select an Ancient Civilisation from the Subject Carousel above.</p>\
+  <p><b> Instructions 2;</b></p>\
+  <p> Select a Quiz Category from the Categories that appear here.</p>\
+  <p><b> Instructions 3;</b></p>\
+  <p> Select a Question from the Quiz that appears here. Enjoy!</p>"
 
-  subjectPanel.innerHTML = subjectBlurb;
+  subjectPanel.appendChild(subjectBlurb);
 }
-
 async function loadSubjectButtons() {
     // console.log("loadSubjectPanel() >>> data = ", appState.subjects);
     const subjectBanner = document.getElementById("carousel-wrapper");
@@ -147,19 +176,39 @@ async function loadSubjectButtons() {
     subjectBanner.appendChild(buttonPanel);
     subjectBanner.appendChild(rightNav);
     carousel();
-  };
-
+};
 function onchangeSubjectSelect(event){ 
     console.log(`The selected event =  ${event.target.id}`);
     appState.subject = event.target.id;
     transitionTo("category");
     loadCategoryPanel();
     setSubjectImage();
-    // document.getElementById("questionModal").style.display = "none";
-    // document.getElementById("quizModal").style.display = "none";
-    // document.getElementById("panelBlock").style.display = "none";
-    };
+};
+function loadCategoryPanel(){
+    const categoryModal = document.getElementById("categoryModal");
+    categoryModal.innerHTML = "";
+    document.getElementById("quizHeader").innerHTML='<b>'+appState.subject+'</b>';
+    const categoryPanel = document.createElement("div");
+    categoryPanel.className = "tilePanel";
+    // categoryPanel.innerHTML = "";
+    const quizHeader = document.createElement("div");
+    quizHeader.className = "tile title"
+    quizHeader.innerText = appState.subject;
+    categoryPanel.appendChild(quizHeader);
+    if (appState.subjects[appState.subject]) {
 
+        appState.subjects[appState.subject].forEach(category => {
+            console.log("The category = ", category);
+            const ctile = document.createElement("div");
+            ctile.id = category;
+            ctile.innerHTML = category;
+            ctile.className = "tile";
+            ctile.addEventListener('click', selectCategory);
+            categoryPanel.appendChild(ctile);
+            });
+        }
+    categoryModal.appendChild(categoryPanel);
+};
 async function selectCategory(event) {
   appState.category = event.target.innerText;
   console.log("The selectCategory(category) = ", event.target.innerText);
@@ -170,35 +219,219 @@ async function selectCategory(event) {
   console.log(`appState.quiz.topic; =  ${appState.quiz.topic}`);
   console.log(`appState.quiz.questions; =  ${appState.quiz.questions}`);
   appState.topic = appState.quiz.topic;
-  setCategoryImage()
+  transitionTo("question");
   loadQuestionModal();
+  setCategoryImage();
   setHeader();
   currentMode = UI_MODE.QUIZ;
 }
-
-function loadCategoryPanel(){
+function loadQuestionModal(){
+    // default display here
+    console.log("loadquestionModal() data = ", appState.quiz);
+    const questionModal = document.getElementById("questionModal");
     const categoryModal = document.getElementById("categoryModal");
-    document.getElementById("quizHeader").innerHTML='<b>'+appState.subject+'</b>';
-    categoryModal.innerHTML = "";
-    if (appState.subjects[appState.subject]) {
+    const questionPanel = document.createElement("div");
+    questionModal.innerHTML = "";
+    questionPanel.className = "tilePanel";
+    // create title block
+    const quizTitle = document.createElement("div");
+    quizTitle.id = 'quizTitle';
+    quizTitle.className = "tile title";
+    // const selectedCategory = appState.category;
+    // const selectedTopic = appState.quiz.topic;
+    quizTitle.innerHTML = `<a>${appState.subject}</a><b>${appState.category}</b><a>${appState.quiz.topic}</a>`;
+    
+    questionPanel.appendChild(quizTitle);
+    quizHeader.innerHTML = `${appState.subject} → ${appState.category} → ${appState.quiz.topic}`;
+    quizHeader.style = "font: 2em sans-serif;";
 
-        appState.subjects[appState.subject].forEach(category => {
-            console.log("The category = ", category);
-            const ctile = document.createElement("div");
-            ctile.id = category;
-            ctile.innerHTML = category;
-            ctile.className = "tile";
-            ctile.addEventListener('click', selectCategory);
-            categoryModal.appendChild(ctile);
-            });
-        }
-    // categoryModal.style = "display: block;";
-    };
+    appState.quiz.questions.forEach((q, i) => {
+        const box = document.createElement("div");
+        box.className = "tile";
+        box.value = i;
+        box.id = 'q0'+(i + 1);
+        box.innerHTML = `<a>Q${i + 1}</a>`;
+        box.addEventListener("click", selectQuestion);
+        questionPanel.appendChild(box);
+    });
+
+    const okbtn = document.createElement("button");
+      okbtn.id = "okQuestionbtn";
+      okbtn.className = "panelbtn";
+      okbtn.innerText = "OK";
+      okbtn.onclick = () => {
+        transitionTo("category");
+      }
+    questionPanel.appendChild(okbtn);
+    questionModal.appendChild(questionPanel)
+    // quizModal.appendChild(quizPanel);
+};
+function selectQuestion(val){
+  const qval = val.target.value;
+  const qid = val.target.id;
+  console.log("254 val.target.value = ",val.target.value)
+  appState.select_question_id = qval;
+  appState.select_question_id = qid;
+  appState.select_question = appState.quiz.questions[qval]
+  // console.log("257 appState.quiz.questions[qid] = ",appState.quiz.questions[qid])
+  // appState.answer_hash = appState.quiz.questions[qid].answer_hash;
+  
+  loadQuizModal();
+  transitionTo("quiz");
+}
+function loadQuizModal(){
+  const qid = appState.question
+  const quizModal = document.getElementById("quizModal");
+  const quizPanel = document.createElement("div");
+  quizModal.innerHTML = "";
+  quizPanel.className = "tilePanel";
+  quizPanel.id = "quizPanel";
+  // get appState data
+  const select_data = appState.select_question;
+  const select_question = appState.select_question.question;
+  console.log("281 select_question = ", select_question);
+  // create question title for quiz modal
+  const qtitle = document.createElement("div");
+  qtitle.className = "tile title";
+  qtitle.id = "quizQuestion";
+  qtitle.innerHTML = `<p><b>${appState.subject}</b></p>
+          <a>${appState.category}</a>
+          <a><b>${appState.quiz.topic}</b></a>
+          <a class = "question">${select_question}</a>`
+  quizPanel.appendChild(qtitle);
+
+  //load answer tiles  
+  let atileId = 0
+  select_data.choices.forEach(choice => {
+        const atile = document.createElement("div");
+        atile.innerText = choice;
+        atile.value = atileId;
+        atile.id = "atile" + atileId;
+        atile.className = "tile a-tile";
+        atile.addEventListener("click", selectAnswer);
+        quizPanel.appendChild(atile);
+        atileId += 1;
+      });
+
+  //add hint tile
+  const etile = document.createElement("div");
+  etile.id = "explainTile";
+  etile.className = "tile title";
+  etile.innerText = "Hint";
+  etile.addEventListener("click", showHint);
+  quizPanel.appendChild(etile);
+
+  //add OK button
+  const okbtn = document.createElement("button");
+  okbtn.id = "okbtn";
+  okbtn.className = "panelbtn";
+  okbtn.innerText = "OK";
+  okbtn.onclick = () => {
+    transitionTo("question");
+  }
+  quizPanel.appendChild(okbtn);
+  quizModal.appendChild(quizPanel);
+
+};
+function selectAnswer(val){
+  console.log("327 selectAnswer(val) = ",val);
+  appState.select_answer = val.target.innerText;
+  console.log("336 appStatequiz.questions[val.target.value] = ",appState.quiz.questions[val.target.value].answer_hash);
+  appState.select_answer_hash = appState.quiz.questions[val.target.value].answer_hash;
+  transitionTo("answer");
+  loadAnswerModal();
+  checkAnswer();
+}
+async function checkAnswer(){
+  // get answer tile
+  const answer_tile = document.getElementById("answer_tile");
+  console.log("appState.question = ",appState.select_answer);
+  // console.log("appState.quiz.questions = ",appState.quiz.questions.[]);
+  const choice = appState.select_answer
+  // convert answer text to sha256
+  const userHash = await sha256(choice);
+  console.log("user Hash = ",userHash);
+  // get hash for correct answer
+  const answer_hash = appState.select_answer_hash;
+  console.log("answer hash = ",answer_hash);
+  //chech if hashes match and do the arbitration
+  console.log("appState.question_id = ",appState.select_question_id);
+  if (userHash === answer_hash){
+      answer_tile.style = "background-color: green;"
+      document.getElementById(appState.select_question_id).style = "background-color: green;"
+      let score = document.getElementById("scoreBox").innerText
+      let points = pointsBox.innerText;
+      score = Number(score);
+      points = Number(points);
+      score += points
+      points = 0;
+      document.getElementById("scoreBox").innerText = score
+      document.getElementById("pointsBox").innerText = points
+  }else {       
+      answer_tile.style = "background-color: salmon;"
+      document.getElementById(appState.select_question_id).style = "background-color: salmon;"
+      let score = document.getElementById("scoreBox").innerText
+      let points = pointsBox.innerText;
+      score = Number(score);
+      points = Number(points);
+      points -= 2;
+      score += points
+      document.getElementById("pointsBox").innerText = points
+  }
+
+
+      // alert(userHash === answer_hash ? "✅ Correct" : "❌ Incorrect");
+}
+async function loadAnswerModal(){
+      const answerModal = document.getElementById("answerModal");
+      answerModal.innerHTML = "";
+        //create panel for answer tiles
+      const answerPanel = document.createElement("div");
+      answerPanel.className = "tilePanel";
+      answerPanel.id = 'answerPanel';
+      // load question tile
+      // create question title for answer modal
+      const qtitle = document.createElement("div");
+      qtitle.className = "tile title";
+      qtitle.id = "quizQuestion";
+      qtitle.innerHTML = `<p><b>${appState.subject}</b></p>
+      <a>${appState.category}</a>
+      <a><b>${appState.quiz.topic}</b></a>
+      <a class = "question">${appState.select_question.question}</a>`
+      answerPanel.appendChild(qtitle);
+      // load answer tile
+      const answer_tile = document.createElement("div")
+      answer_tile.className = 'tile big';
+      answer_tile.id = "answer_tile";
+      answer_tile.innerText = appState.select_answer;
+      answerPanel.appendChild(answer_tile);
+      //add explanation
+      const etile = document.createElement("div");
+      etile.className = "tile etile";
+      etile.id = 'explainTile';
+      // const res = await getHint();
+      const explanation = "<p>Waiting for an Explanation!</p>"
+      // const explanation = appState.select_hint;
+      etile.innerHTML = explanation
+
+      answerPanel.appendChild(etile);
+
+        //add OK button
+      const okbtn = document.createElement("button");
+      okbtn.id = "okbtn";
+      okbtn.className = "panelbtn";
+      okbtn.innerText = "OK";
+      okbtn.onclick = () => {
+        transitionTo("question");
+      }
+      answerPanel.appendChild(okbtn);
+      answerModal.appendChild(answerPanel);
+}
 function setSubjectImage(){
     let subjectImage = appState.subject.replaceAll(" ", "") + ".webp";   
     console.log(STATIC_IMG_BASE + subjectImage);
     document.getElementById("subjectImage").innerHTML = `<img src="${STATIC_IMG_BASE}${subjectImage}" alt="${appState.subject}">`;
-  };
+};
 function setCategoryImage(){
     setSubjectImage()
     // let subjectImage = appState.subject.replaceAll(" ", "") + "/"; 
@@ -206,198 +439,19 @@ function setCategoryImage(){
     // console.log(STATIC_IMG_BASE + categoryImage);
     // document.getElementById("subjectImage").innerHTML = `<img src="${STATIC_IMG_BASE}${subjectImage}${categoryImage}" alt="${appState.category}">`;
     // document.getElementById("subjectImage").innerHTML = `<img src="${STATIC_IMG_BASE}${subjectImage}" alt="${appState.category}">`;
-  };
-
-      function setHeader(){
-        const quizHeader = document.getElementById("quizHeader");
-        quizHeader.innerHTML = `${appState.subject} → ${appState.category} → ${appState.topic}`;
-        quizHeader.style = "font: 1em sans-serif;";
-      }
-
-    function loadQuestionModal(){
-  // default display here
-        console.log("loadquestionModal() data = ", appState.quiz);
-        const questionModal = document.getElementById("questionModal");
-        const categoryModal = document.getElementById("categoryModal");
-        
-        document.getElementById("questionModal").innerHTML = "";
-        questionModal.innerHTML = "";
-        questionModal.className = "quizBlock";
-        const title = document.createElement("div");
-        title.id = 'quiz#0';
-        title.className = "tile title";
-        const selectedCategory = appState.category;
-        const selectedTopic = appState.quiz.topic;
-        title.innerHTML = `<b>${appState.category}</b><a>${appState.quiz.topic}</a>`;
-        
-        questionModal.appendChild(title);
-        document.getElementById("categoryModal").style = "display: none;";
-        questionModal.style = "display: block;"
-        quizHeader.innerHTML = `${appState.subject} → ${appState.category} → ${appState.quiz.topic}`;
-        quizHeader.style = "font: 2em sans-serif;";
-
-        appState.quiz.questions.forEach((q, i) => {
-            const box = document.createElement("div");
-            box.className = "tile ";
-            box.value = i;
-            box.id = 'q0'+(i + 1);
-            box.innerHTML = `<a>Q${i + 1}</a>`;
-            box.addEventListener("click", getQuestionChoice);
-            questionModal.appendChild(box);
-        });
-        const okbtn = document.createElement("button");
-          okbtn.id = "okQuestionbtn";
-          okbtn.className = "panelbtn";
-          okbtn.innerText = "OK";
-          okbtn.onclick = () => {
-            questionModal.style.display = "none";
-            document.getElementById("categoryModal").style.display = "block";
-          }
-        questionModal.appendChild(okbtn);
-        categoryModal.style.display = "none";
-
-    };
-
-async function sha256(str) {
-  const utf8 = new TextEncoder().encode(str);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', utf8);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  return hashHex;
+};
+function setHeader(){
+    const quizHeader = document.getElementById("quizHeader");
+    quizHeader.innerHTML = `${appState.subject} → ${appState.category} → ${appState.topic}`;
+    quizHeader.style = "font: 1em sans-serif;";
 }
-
-  function getQuestionChoice(val){
-    //get array index from click-event as value
-    const qchoice = val.target.value
-    //load selection values to global
-    appState.quiz.question_id = val.target.id;
-    appState.quiz.answer_hash = appState.quiz.questions[val.target.value].answer_hash;
-    // get modal DOM
-    const quizModal = document.getElementById("quizModal");
-    document.getElementById("questionModal").style.display = "none";
-    // const pointsBox = document.getElementById("pointsBox");
-    // pointsBox.innerText = 5;
-    quizModal.style.display ="block";
-    // create question title for quiz modal
-    const qtitle = document.createElement("div");
-    appState.select_question = appState.quiz.questions[qchoice].question
-    appState.select_question_id = appState.quiz.questions[qchoice].question_id
-    console.log("appState.select_question_id = ", appState.select_question_id);
-    qtitle.className = "tile title";
-    qtitle.value = appState.select_question_id;
-    qtitle.id = 'q'+val.target.value;
-    qtitle.innerHTML = `<a><b>${appState.quiz.topic}</b></a><a>${appState.select_question}</a>`
-    quizModal.innerHTML="";
-    quizModal.appendChild(qtitle);
-
-    //create panel for answer tiles
-    const answerPanel = document.createElement("div");
-    answerPanel.className = "panel";
-    answerPanel.id = 'answerPanel';
-    answerPanel.innerHTML = ""
-    quizModal.appendChild(answerPanel);
-
-    //create panel for answer tiles
-    const checkPanel = document.createElement("div");
-    checkPanel.className = "panel";
-    checkPanel.id = 'checkPanel';
-    checkPanel.innerHTML = "";
-    checkPanel.style = "display: none";
-    quizModal.appendChild(checkPanel);
-    //load answer tiles  
-    let atileId = 0
-    appState.quiz.questions[qchoice].choices.forEach(choice => {
-          const atile = document.createElement("div");
-          atile.innerText = choice;
-          atile.value = atileId;
-          atile.id = "atile" + atileId;
-          atile.className = "tile a-tile";
-          atile.addEventListener("click", checkAnswer);
-          answerPanel.appendChild(atile);
-          atileId += 1;
-        });
-
-    //add hint tile
-    const etile = document.createElement("div");
-    etile.id = "explainTile";
-    etile.className = "tile title";
-    etile.innerText = "Hint";
-    etile.addEventListener("click", showHint);
-    // etile.onclick = () => {
-    //   showHint()
-    // }
-    answerPanel.appendChild(etile);
-
-    //create panel for hint tile
-    const hintPanel = document.createElement("div");
-    hintPanel.className = "panel";
-    hintPanel.id = 'hintPanel';
-    hintPanel.innerHTML = ""
-    hintPanel.style = "display: none;"
-    quizModal.appendChild(hintPanel);
-
-    //add OK button
-    const okbtn = document.createElement("button");
-    okbtn.id = "okbtn";
-    okbtn.className = "panelbtn";
-    okbtn.innerText = "OK";
-    okbtn.onclick = () => {
-      quizModal.style.display = "none";
-      document.getElementById("questionModal").style.display = "block";
-    }
-    quizModal.appendChild(okbtn);
-
-  };
-
-async function checkAnswer(val){
-      // get answer tile choice id
-      const answer_tile = document.getElementById(val.target.id)
-      const choice = answer_tile.innerText
-      // convert answer text to sha256
-      const userHash = await sha256(choice);
-      // get hash for correct answer
-      const answer_hash = appState.quiz.answer_hash;
-      //chech if hashes match and do the arbitration
-      if (userHash === answer_hash){
-          answer_tile.style = "background-color: green;"
-          document.getElementById(appState.quiz.question_id).style = "background-color: green;"
-          let score = document.getElementById("scoreBox").innerText
-          let points = pointsBox.innerText;
-          score = Number(score);
-          points = Number(points);
-          score += points
-          points = 0;
-          document.getElementById("scoreBox").innerText = score
-          document.getElementById("pointsBox").innerText = points
-      }else {       
-          answer_tile.style = "background-color: salmon;"
-          document.getElementById(appState.quiz.question_id).style = "background-color: salmon;"
-          let score = document.getElementById("scoreBox").innerText
-          let points = pointsBox.innerText;
-          score = Number(score);
-          points = Number(points);
-          points -= 2;
-          score += points
-          document.getElementById("pointsBox").innerText = points
-      }
-      const checkPanel = document.getElementById("checkPanel");
-      const answerPanel = document.getElementById("answerPanel");
-      // checkPanel.innerHTML = "";
-      checkPanel.appendChild(answer_tile);
-      //add explanation
-      const etile = document.createElement("div");
-      etile.className = "tile etile";
-      etile.id = 'e'+val.target.value;
-      const res = await getHint();
-      const explanation = appState.select_hint;
-      etile.innerHTML = explanation
-
-      checkPanel.appendChild(etile);
-      checkPanel.style.display = "block";
-      answerPanel.style.display = "none";
-      // alert(userHash === answer_hash ? "✅ Correct" : "❌ Incorrect");
-    }
-    
+async function sha256(str) {
+    const utf8 = new TextEncoder().encode(str);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', utf8);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex;
+}  
 async function showHint() {
   const res = await getHint();
   const hintPanel = document.getElementById("hintPanel");
@@ -416,8 +470,7 @@ async function showHint() {
       answerPanel.style = "display:block;"
       }
 
-    }
-
+}
 async function getHint() {
       console.log("ln 289 appState.select_question_id = ", appState.select_question_id);
       // const res = await fetch(`/api/getHint/${encodeURIComponent(appState.subject)}, ${encodeURIComponent(appState.category)}, ${encodeURIComponent(appState.topic)}, ${encodeURIComponent(appState.select_question)}`);
@@ -426,7 +479,7 @@ async function getHint() {
       console.log("line 255 getHint() = ", data)
       appState.select_hint = data.explanation;
       return;
-    };
+};
 
 document.addEventListener("DOMContentLoaded", () => {
       init();
