@@ -6,25 +6,80 @@
 
 let UI_MODE = "subject";
  
-const appState = {
-  subjects: {},        // full subject → categories map
-  subject: null,
-  category: null,
-  topic: null,
-  quiz: null,
-  select_question: "",
-  select_question_id: "",
-  select_question_val: "",
-  select_hint: "",
-  select_answer: "",
-  select_answer_id: ""
-};
+// const appState = {
+//   subjects: {},        // full subject → categories map
+//   subject: null,
+//   category: null,
+//   topic: null,
+//   quiz: null,
+//   select_question: "",
+//   select_question_id: "",
+//   select_question_val: "",
+//   select_hint: "",
+//   select_answer: "",
+//   select_answer_id: ""
+// }
+
+class quizObject {
+    #initialQuiz; // Private field, inaccessible from outside the class
+    #subjectMap = new Map( {
+    subject: null,
+    category: null,
+    });
+    #appState = new Map( {
+    subjects: {},        // full subject → categories map
+    subject: null,
+    category: null,
+    topic: null,
+    quiz: null,
+    select_question: "",
+    select_question_id: "",
+    select_question_val: "",
+    select_hint: "",
+    select_answer: "",
+    select_answer_id: ""
+    });
+    constructor(initialData = {}) {
+    // Populate the map with initial data
+    Object.entries(initialData).forEach(([subject, categories]) => {
+      this.#subjectMap.set(subject, categories);
+    });
+    console.write("#subjectMap = ",subjectMap );
+  }
+
+    // Getter method for controlled reading of the value
+    get subjects() {
+        return this.#appState.subjects;
+    }
+
+    // Setter method for controlled writing of the value with validation
+    set temperature(value) {
+        if (value < -273.15) {
+            console.error("Temperature cannot be below absolute zero.");
+            return; // Exit without setting the value
+        }
+        this.#appState = value;
+    }
+}
+
+// const thermo = new Thermostat(20);
+
+// console.log(thermo.temperature); // Outputs: 20 (uses the getter)
+
+// thermo.temperature = 25; // Uses the setter
+// console.log(thermo.temperature); // Outputs: 25
+
+// thermo.temperature = -300; // Uses the setter, but validation prevents the change
+// // Outputs (to console.error): Temperature cannot be below absolute zero.
+// console.log(thermo.temperature);
+
 // function googleTranslateElementInit() {
 //     new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
 //   }
 async function init() {
   const res = await fetch("/api/subjects");
-  appState.subjects = await res.json();
+  data = await res.json();
+  const appState = new quizObject(data);
   // createDivs();
   transitionTo("subject");
   resetAppState("subject");
