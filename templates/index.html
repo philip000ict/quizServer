@@ -4,11 +4,13 @@
   <title>Quiz Server</title>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/block.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/carousel.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/spinner.css') }}">
   <script>const STATIC_IMG_BASE = "{{ url_for('static', filename='img/') }}";</script>
   <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
   <script type="module"  src = "{{ url_for('static', filename='js/quiz.js') }}"></script>
   <script type="module" src = "{{ url_for('static', filename='js/SubjectCatalog.js') }}"></script>
   <script type="module" src = "{{ url_for('static', filename='js/QuizData.js') }}"></script>
+  <script type="module" src = "{{ url_for('static', filename='js/spinner.js') }}"></script>
   <script src = "{{ url_for('static', filename='js/carousel.js') }}"></script>
   <script>  </script>
 </head>
@@ -71,5 +73,10 @@
       </section>
     </div>
   </div>
+  <div id="quiz-loading" class="loading hidden">
+  <div class="spinner"></div>
+  <div class="loading-text">Loading quiz…</div>
+</div>
+
 </body>
 </html>

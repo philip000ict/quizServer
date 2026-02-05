@@ -122,10 +122,10 @@ header {
   height: auto;
 } */
 .title {
-  /* background-color: darkblue; */
+  background-color: linen;
   cursor: not-allowed;
-  height: 150px;
-  font: 1.8em sans-serif;
+  height: 160px;
+  font: 1.6em sans-serif;
 }
 
 .title a{
@@ -364,6 +364,7 @@ header {
 
 .imgPanel img{
   width: 100%;
+  height: auto;
   max-width: 100vw;
   object-fit: contain;
 }
@@ -381,7 +382,17 @@ header {
   /* flex-wrap: wrap; */
 }
 .tile{
-  /* margin: 1vw; */
+    height: auto;
+    font: 1.2em sans-serif;
+    font-weight: normal;
+    margin-bottom: 1vh;
+  }
+.title{
+  height: 100px;
+  font: 1.4em sans-serif;
+  }
+.tilePanel {
+  height: auto;
 }
 .imageSrc {
     height: 40vw;
@@ -402,7 +413,7 @@ header {
     }
   .panelbtn{
     width: 100%;
-    /* margin: 10px 5vw; */
+    margin-bottom: 1vh;
     overflow: hidden;
   }
   .score{
@@ -424,10 +435,10 @@ header {
     width: 100vw;
    }  
   .tile{
-    width: 92%;
-    color: white;
+    font: 1em sans-serif;
+  }
+  .title{
     font: 1.2em sans-serif;
-    font-weight: normal;
   }
   .imgPanel img {
     width: 100vw;

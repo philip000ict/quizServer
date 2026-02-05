@@ -149,12 +149,12 @@ function loadSubjectPanel(){
   subjectBlurb.innerHTML = "<h1>Quiz Server App</h1>\
   <p>An interactive quiz engine delivering curriculum-aligned questions, instant feedback, and dynamic scoring.\
   Designed for students and teachers, it runs smoothly across devices as part of the Hydra microservice family. </p>\
-  <p><b> Instructions 1; </b></p>\
-  <p> Select an Ancient Civilisation from the Subject Carousel above.</p>\
-  <p><b> Instructions 2;</b></p>\
-  <p> Select a Quiz Category from the Categories that appear here.</p>\
-  <p><b> Instructions 3;</b></p>\
-  <p> Select a Question from the Quiz that appears here. Enjoy!</p>"
+  <a><b> Instructions 1; </b></a>\
+  <a> Select an Ancient Civilisation from the Subject Carousel above.</a>\
+  <a><b> Instructions 2;</b></a>\
+  <a> Select a Quiz Category from the Categories that appear here.</a>\
+  <a><b> Instructions 3;</b></a>\
+  <a> Select a Question from the Quiz that appears here. Enjoy!</a>"
 
   subjectPanel.appendChild(subjectBlurb);
 }
@@ -219,24 +219,34 @@ function loadCategoryPanel(subject){
     categoryModal.appendChild(categoryPanel);
 };
 async function selectCategory(event) {
-  const category = event.target.innerText;
-  subjectCatalog.currentCategory = category;
-  const subject = subjectCatalog.currentSubject;
-  
-  console.log("subjectCatalog.getCurrentCategory() = ", subjectCatalog.currentCategory);
-  const res = await fetch(
-    `/api/single_quiz_by_category/${encodeURIComponent(subject)},${encodeURIComponent(category)}`
-  );
-  quizData01 = new QuizData(await res.json());
-  quizData01.currentSubject = subjectCatalog.currentSubject;
-  console.log(`res; =  ${res}`);
-  console.log("quizData01 = ",quizData01);
-  console.log(`quizData01.currentTopic; =  ${quizData01.currentTopic}`);
-  transitionTo("question");
-  loadQuestionModal();
-  setCategoryImage();
-  setHeader();
+  showSpinner();              // 🔒 lock UI immediately
+    try {
+        const category = event.target.innerText;
+        subjectCatalog.currentCategory = category;
+        const subject = subjectCatalog.currentSubject;
+        
+        // console.log("subjectCatalog.getCurrentCategory() = ", subjectCatalog.currentCategory);
+        const res = await fetch(
+          `/api/single_quiz_by_category/${encodeURIComponent(subject)},${encodeURIComponent(category)}`
+        );
+        quizData01 = new QuizData(await res.json());
+        quizData01.currentSubject = subjectCatalog.currentSubject;
+        // console.log(`res; =  ${res}`);
+        // console.log("quizData01 = ",quizData01);
+        // console.log(`quizData01.currentTopic; =  ${quizData01.currentTopic}`);
+        transitionTo("question");
+        loadQuestionModal();
+        setCategoryImage();
+        setHeader();
+    } catch (err) {
+        console.error("Quiz load failed", err);
+        alert("Failed to load quiz. Please try again.");
+
+  } finally {
+       hideSpinner();             // 🔓 always unlock
+  }
 }
+
 function loadQuestionModal(){
     setAppState("quiz");
     // default display here
@@ -501,6 +511,12 @@ async function getHint() {
       
       return;
 };
+function showSpinner() {
+  document.getElementById("quiz-loading").classList.remove("hidden");
+}
+function hideSpinner() {
+  document.getElementById("quiz-loading").classList.add("hidden");
+}
 
 document.addEventListener("DOMContentLoaded", () => {
       init();
