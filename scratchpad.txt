@@ -33,3 +33,16 @@ Alfred the Great and the Rise of Wessex
 The Unification of England: The creation of a single English kingdom, beginning with the efforts of Alfred and completed by kings like Athelstan.
 Anglo-Saxon Law and Government: The development of shires, hundreds, and the Witan (council) to govern and manage justice.
 
+similar class and drop in getter setters for the quiz data object as follows
+Object { subjects: {}, subject: "Ancient Egypt", category: "Art and Writing", topic: "Amulets and Jewelry", quiz: {…}, select_question: "Which ancient Egyptian symbol, often crafted as an amulet, was associated with life and immortality? Amulets were believed to offer protection and luck.", select_question_id: "q01", select_question_val: 0, select_hint: "...", select_answer_hash: "", … }
+number of quizzes in play can be 1 to 6
+1. constructor quizData01 = new QuizData(data) replaces; appState.quiz = await res.json();
+2. set current.category for quiz data, replaces; appState.category = event.target.innerText;
+3. get current.topic for quizData01 from userSelect function, replaces; current_topic = appState.quiz.topic
+4. set current.topic for quizData01, replaces; appState.topic = appState.quiz.topic
+5. logic to load question buttons, replaces; appState.quiz.questions.forEach((q, i) => {...}
+6. set current.question_data for quizData01, replaces; appState.select_question = appState.quiz.questions[val.target.value].question;
+7. get current.question_data replaces; appState.select_question
+8. logic to iterate over current.question_data.choices, replaces appState.select_question.choices.forEach(choice => {...});
+9. set, get current.question
+10. set, get current.answer

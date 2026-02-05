@@ -5,7 +5,7 @@ body {
     /* padding: 5px; */
 }
 #wrapper{
-max-width: 1250px;
+/* max-width: 1250px; */
 min-height: 100vh;
 background-color: lightblue;
 margin: auto;
@@ -74,7 +74,7 @@ header {
 .quizBlock{
   display: block;
   width: 45vw;
-  max-width: 600px;
+  max-width: 900px;
   /* background-color: blanchedalmond; */
   padding-bottom: 5px;
   margin: 5px;
@@ -83,7 +83,7 @@ header {
 .imgPanel img{
   width: 45vw;
   height: 75vh;
-  max-width: 600px;
+  max-width: 900px;
   object-fit: cover;
 }
 .tile {
@@ -106,7 +106,9 @@ header {
   padding: 5px;
 }
 .tile.q {
-  height: 100px;
+  height: fit-content;
+  min-height: 100px;
+  max-height: 150px;
   background-color: aliceblue;
   
   /* font: 0.7em sans-serif;
@@ -229,15 +231,8 @@ header {
 } */
 .subjectbtn{
   width: 85px;
-  /* height: 85px; */
   text-align: center;
   display:block;
-  /* background-color: #f4f4f4; */
-  
-  /* box-shadow: 10px 10px 10px darkslategrey; */
-  /* border-radius: 10px; */
-  /* font: 1em sans-serif;
-  line-height: 20px; */
   margin: 10px 10px 0 10px;
   cursor: pointer;
 }
@@ -250,7 +245,7 @@ header {
   font: 0.7em sans-serif;
 }
 .panelbtn{
-  width: 92%;
+  width: 98%;
   /* max-width: 250px; */
   height: 50px;
   text-align: center;
@@ -406,7 +401,7 @@ header {
     flex-direction: column;
     }
   .panelbtn{
-    width: 94%;
+    width: 100%;
     /* margin: 10px 5vw; */
     overflow: hidden;
   }

@@ -163,13 +163,13 @@ def single_quiz_by_category(subject, category):
         choices = [row["correct_choice"], row["distractor1"], row["distractor2"], row["distractor3"]]
         random.shuffle(choices)
         correct_hash = hashlib.sha256(row["correct_choice"].encode()).hexdigest()
-        # explanation_hash = hash_answer(row["explanation"])
+        explanation = row["explanation"]
         questions.append({
             "question_id": question_id,
             "question": row["question"],
             "choices": choices,
-            "answer_hash": correct_hash
-            # "explanation_hash": "explanation_hash"
+            "answer_hash": correct_hash,
+            "explanation": explanation
         })
 
     cursor.close()
