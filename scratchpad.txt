@@ -8,6 +8,25 @@ magick Sport.png \
 
   convert MotorRacing.png   -gravity center  -crop 533x533+0+0 -resize 1024x1024 MotorRacing.webp
 
+mysqldump -u [username] -p --no-data [database_name] [table_name] > [output_file.sql]
+
+mysqldump -u root -p --no-data db ancient_quiz > ancient_quiz.schema.sql
+
+save mysql table data to local machine
+
+mysqldump \
+  -u php_docker \
+  -p \
+  --single-transaction \
+  --quick \
+  --skip-lock-tables \
+  --no-create-info \
+  --set-gtid-purged=OFF \
+  db \
+  ancient_quiz \
+  > ~/hydra/db/ancient_quiz.data.sql
+
+  docker cp mysql:/ancient_quiz.data.sql ~/hydra/db/ancient_quiz.data.sql
 
 
   The Adventus Saxonum (Germanic Migration/Settlement): The arrival of Angles, Saxons, and Jutes from northern Europe after the withdrawal of the Romans.

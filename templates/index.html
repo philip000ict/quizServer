@@ -16,7 +16,7 @@
 </head>
 <body>
   <div id="wrapper"> 
-    <header id = "pageTitle">Ancient Civilisations<a style = "font-size: small ;"> &nbsp; Quiz Server from cv3tech.com</a></header>
+    <header id = "pageTitle">Ancient Civilisations<a style = "font-size: small ;"> &nbsp; cv3tech.com</a></header>
 
             <!-- Container for Button-Widget Grid and Info-Panel  -->
     <div id ="container">    
@@ -52,24 +52,23 @@
         <header id = "quizHeader"></header>
         <div id ="panelBlock" class = "gridContainer">
           <div id ="modalContainer" class = "panelBox">
-            
             <div id ="subjectModal" class = "quizBlock"></div>
             <div id ="categoryModal" class = "quizBlock"></div>
             <div id ="questionModal" class = "quizBlock"></div>  
             <div id ="quizModal" class="quizBlock"></div>
             <div id ="answerModal" class = "quizBlock"></div>
-            <!-- <div id ="hintPanel" class="quizBlock"></div> -->
           </div>   
-            <!-- <div id ="randomQuizModal" class="randomQuizBlock"></div>  -->
-            
-
-            <div id ="imageContainer" class="quizBlock">
-              <div id = "subjectImage" class = "imgPanel">
-                <img src = "{{ url_for('static', filename='img/default.webp') }}" alt = "QuizBrowser image blending topics on historical subjects into a unified and interactive quiz setting.">
-              </div>  
+            <div id ="splashModal" class="quizBlock">
+              <div id ="splashPanel" class="tilePanel">
+                <div id = scoreBlock class = "tile title">
+                  
+                </div>
+                <div id = "subjectImage" class = "imgPanel">
+                  <img src = "{{ url_for('static', filename='img/default.webp') }}" alt = "QuizBrowser image blending topics on historical subjects into a unified and interactive quiz setting.">
+                </div>  
+              </div>
             </div> 
         </div>
-
       </section>
     </div>
   </div>

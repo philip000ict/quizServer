@@ -64,7 +64,7 @@ export class QuizData {
     return this.#meta.topic;
   }
     get currentQuestion(){
-    return this.#selection.question; //.questions[val].question;
+    return this.#selection.question; 
   }
   set currentQuestionTileID(val) {
     this.#selection.questionTileID = val;
@@ -88,7 +88,7 @@ export class QuizData {
     return this.#selection.question_id;
   }
   get quizTitle() {
-    const quizTitle = `${this.#meta.subject}<br>${this.#meta.category}<br>${this.#meta.topic}`;
+    const quizTitle = `${this.#meta.subject}<br><a>${this.#meta.category}<br>${this.#meta.topic}</a>`;
     return quizTitle;
   }
 

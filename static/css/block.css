@@ -1,15 +1,13 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: lightgray;
-    margin: 0px;
-    /* padding: 5px; */
+  font-family: Arial, sans-serif;
+  background-color: lightgray;
+  margin: 0px;
 }
 #wrapper{
-/* max-width: 1250px; */
-min-height: 100vh;
-background-color: lightblue;
-margin: auto;
-/* padding: 5px; */
+  max-width: 1450px;
+  min-height: 100vh;
+  background-color: lightblue;
+  margin: auto;
 }
 h1{
   text-align: center;
@@ -19,9 +17,9 @@ h1{
   margin: 15px;
 }
 header {
-  color: slategrey;
+  color: #4e3f88;
   text-align: center;
-  font: bold 2.5em sans-serif;
+  font: bold 1.6em sans-serif;
 }
 #quizHeader{
   display: none;
@@ -45,82 +43,63 @@ header {
 .tilePanel{
   display: flex;
   flex-direction: column;
-  height: 75vh;
+  /* height: 75vh; */
   justify-content: space-between;
 }
-/* #categoryPanel {
-  height: 75vh;
-  background-color: lightblue;
-  display: flex;
-  flex-direction: row;
-  /* margin: 5px;
-  padding: 5px; 
-} */
-/*.topic-panel {
-   background-color: salmon;
-  /* display: flex;
-  flex-direction: row; */
-  /* margin: 5px;
-  padding: 5px;  
-}*/
-/*.panel {
-  height: 350px;
-   width: 350px; */
-  /* background-color: salmon; */
-  /* background-color: aliceblue;
-  margin:5px;
-  padding: 5px;  
-}*/
 .quizBlock{
   display: block;
   width: 45vw;
-  max-width: 900px;
-  /* background-color: blanchedalmond; */
+  max-width: 700px;
   padding-bottom: 5px;
   margin: 5px;
   position: relative;
 }
 .imgPanel img{
   width: 45vw;
-  height: 75vh;
-  max-width: 900px;
+  /* height: 75vh; */
+  max-width: 700px;
   object-fit: cover;
 }
 .tile {
   width: 97%;
-  /* max-width: 250px; */
   cursor: pointer;
-  height: 40px;
+  /* height: 40px; */
   display: flex;              /* make container a flexbox */
   flex-direction: column;
   align-items: center;        /* vertical centering */
   justify-content: center;    /* optional: horizontal centering */
   font: 1.2em sans-serif;
-  /* color: aliceblue; */
   background-color: antiquewhite;
   border: solid 1px royalblue;
   border-radius: 10px;
-  /* margin: 10px auto; */
-  /* font-weight: bold; */
   text-align: center;
   padding: 5px;
+  margin-bottom: 5px;
+}
+.tile.image{
+  height: auto;
+}
+.tile.score{
+  font: 5em;
+  background-color: royalblue;
+  color: antiquewhite;
+  height: 80%;
+  width:40%;
 }
 .tile.q {
   height: fit-content;
   min-height: 100px;
   max-height: 150px;
   background-color: aliceblue;
-  
-  /* font: 0.7em sans-serif;
-  margin: 5px; */
 }
 .tile.big {
   height: 100px;
   cursor: not-allowed;
 } 
-/* .tile.big{
+.tile.text{
   height: auto;
-} */
+  font: 1em sans-serif;
+}
 .title {
   background-color: linen;
   cursor: not-allowed;
@@ -131,78 +110,18 @@ header {
 .title a{
   font: 0.8em sans-serif;
 }
-
-/* .a-tile{
-  font-weight: normal;
-  height: auto;
-  min-height: 40px;
-  /* width: 90%; */
-  /* max-width: 40vw; 
-  font: 1.2em sans-serif;
-  color: white;
-} */*/
-/* .default-title{
-  font-weight: normal;
-  height: auto;
-  min-height: 60px;
-} */
-/* .qtitle{
-  font-weight: normal;
-  height: auto;
-  min-height: 60px;
-  font: 1em sans-serif;
-} */
-/* .etile{
-  height: auto;
-  min-height: 60px;
-  font: 1em sans-serif;
-  font-weight: normal;
-} */
-.varBox{
-  width: 100px;
-  height: 50px;
-  color: aliceblue;
-  background-color: royalblue;
+#scoreBlock{
+  flex-direction: row;
+  justify-content:space-evenly;
 }
-/* #categoryPanel{
-  position: relative;
-  z-index: 0;
-} */
-/* #categoryModal{
-  display: none;
-} */
-/* #hintPanel{
-  display: none;
-} */
-/* #defaultQuizContainer{
-  display: block;
-} */
-/* #questionModal{
-  display: none;
-  /* width: 45vw; */
-  /* max-width: 533px;
-  background-color: aquamarine;
-} */ 
-
-/* #quizModal{
-  display: none;
-} */
-
-/* .imageSrc {
-  height: 35vw;
-  width: 20vw;
-  margin: 5px;
-} */
 #buttonPanel{
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    /* justify-content: space-evenly; */
     overflow: auto;
     padding: 8px 0;
 }
 .btnBlock{
-  /* background-color: chocolate; */
     display: flex;
     flex-direction: column;
     justify-content:center;
@@ -223,14 +142,7 @@ header {
     flex-direction: row;
     justify-content:center;
 }
-/* .btnImg{
-  width: 70px;
-  height: 70px;
-  border-radius: 7px;
-  object-fit: fill;
-} */
 .subjectbtn{
-  width: 85px;
   text-align: center;
   display:block;
   margin: 10px 10px 0 10px;
@@ -246,7 +158,6 @@ header {
 }
 .panelbtn{
   width: 98%;
-  /* max-width: 250px; */
   height: 50px;
   text-align: center;
   display:block;
@@ -256,20 +167,17 @@ header {
   border-radius: 15px;
   font: 1em sans-serif;
   line-height: 20px;
-  /* margin: 3%; */
   cursor: pointer;
-  /* position: absolute;
-  bottom: 0; */
 }
 .navBtn{
   margin: 20px;
-  height: 75px;
-  width: 7.5%;
+  /* height: 75px;
+  width: 7.5%; */
   color: #f4f4f4;
-  background-color: royalblue;
-  border: 3px solid slateblue;
+  background-color: slateblue;
+  /* border: 3px solid slateblue;
   border-radius: 5px;
-  box-shadow: none;
+  box-shadow: none; */
   font: 4em sans-serif;
   font-weight: bold;
   text-align: center;
@@ -303,42 +211,13 @@ header {
     background-color: teal;
     margin: 10px;
 }
-/* @media screen and (max-width: 1400px) {
-  #container {   
-    flex-direction: column;
-  }
-  #gridContainer {   
-      flex-direction: row;
-      margin: auto;
-    }
-  #buttonPanel {   
-      flex-direction: column;
-
-    }
-  .btnBlock {
-      margin: 0px;
-      padding: 0 ;
-
-  }
-} */
 @media screen and (max-width: 1050px) {
   header{
-    font-size: 1.5em;
+    font-size: 1.2em;
   }
   #container {   
     flex-direction: column;
   }
-  /* #gridContainer {   
-      flex-wrap: wrap;
-    } */
-  /* .imageSrc {
-      height: 35vw;
-      width: 35vw;
-      margin: 5px;
-} */
-  /* #buttonPanel {   
-      flex-direction: column;
-      }  */
   #btnBlock01 {
     display: flex;
     flex-direction: row;
@@ -356,9 +235,9 @@ header {
       padding: 0 ;
       
   }
-  .panelbtn {
+  /* .panelbtn {
       width: 92%;
-  }
+  } */
 }
   @media screen and (max-width: 750px) {
 
@@ -379,7 +258,6 @@ header {
 .gridContainer {
   display: flex;
   flex-direction: column;
-  /* flex-wrap: wrap; */
 }
 .tile{
     height: auto;
@@ -402,9 +280,6 @@ header {
   #buttonPanel {   
     flex-direction: row;
     } 
-    /* #buttonPanel {   
-      justify-content: space-around;
-      } */
   #btnBlock01 {
     flex-direction: column;
     }
@@ -421,36 +296,53 @@ header {
   }
   }
 
-    @media screen and (max-width: 400px) {
+    @media screen and (max-width: 480px) {
+  p {
+    font-size: 1em;
+  }
+  a {
+    font-size: 0.8em;
+  }
   .panelbtn{
-    width: 92%;
+    width: 98%;
   }
   .score{
     width: 70vw;
   }
+  .subjectbtn{
+    margin: 10px 0 0 0;
+    width: 60px;
+  }
+  .subjectbtn img{
+    height: 50px;
+  }
   #imageName {
     font-size: 10vw;
   } 
-   .quizBlock{
+  #imageContainer{
+    display: none;
+  }
+  .navBtn{
+    margin: 5px;
+  }
+  .textBlock{
+    margin: 0 5px;
+  }
+  .quizBlock{
     width: 100vw;
    }  
   .tile{
-    font: 1em sans-serif;
+    font: 0.8em sans-serif;
+  
   }
   .title{
+    height: 80px;
     font: 1.2em sans-serif;
+  }
+  .title a{
+    font: 0.8em sans-serif;
   }
   .imgPanel img {
     width: 100vw;
-    /* object-fit: contain; */
   }
-  /* #buttonPanel {
-    flex-direction: column;
-    justify-content: space-evenly;
-  } */
-    /* .btnBlock {
-    flex-direction: row;
-    justify-content: space-evenly;
-    width: 95vw;
-    } */
   }
