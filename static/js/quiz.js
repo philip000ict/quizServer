@@ -14,6 +14,7 @@ async function init() {
   loadSubjectButtons();
   loadSubjectPanel();
   loadScorePanel();
+  // addPrintBtn();
 }
 const appState = {
   subjects: {},        // full subject → categories map
@@ -134,8 +135,9 @@ function loadSubjectPanel(){
 
   let instructionTile = document.createElement("div"); 
   instructionTile.className = "tile image";
-  instructionTile.innerHTML = "<a><b> Instructions 1; </b></a>\
-  <a> Select an Ancient Civilisation from the Subject Carousel above.</a>"
+  instructionTile.innerHTML = `<a><b> Instructions 1; </b></a>\
+  <img src="${STATIC_IMG_BASE}carousel.png" id ='carouselImg' alt='subject selection carousel buttons'>\
+  <a> Select an Ancient Civilisation from the Subject Carousel above.</a>`;
   subjectPanel.appendChild(instructionTile);
 
   instructionTile = document.createElement("div"); 
@@ -166,6 +168,17 @@ function loadScorePanel(){
   tallyBox.id = "tallyBox";
   tallyBox.innerText = "0";
   scoreBlock.appendChild(tallyBox);
+}
+function addPrintBtn(){
+  const printBtn = document.createElement("div");
+  printBtn.className = "panelBtn";
+  printBtn.id= "printBtn";
+  printBtn.innerText = "Print Quiz";
+  printBtn.addEventListener('click', loadPrintPage);
+  document.getElementById("buttonBox").appendChild(printBtn);
+}
+function loadPrintPage(){
+
 }
 async function loadSubjectButtons() {
     const subjectBanner = document.getElementById("carousel-wrapper");
@@ -294,8 +307,8 @@ function loadQuestionModal(){
     });
 
     const okbtn = document.createElement("button");
-      okbtn.id = "okQuestionbtn";
-      okbtn.className = "panelbtn";
+      okbtn.id = "okQuestionBtn";
+      okbtn.className = "panelBtn";
       okbtn.innerText = "OK";
       okbtn.onclick = () => {
         transitionTo("category");
