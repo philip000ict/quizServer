@@ -4,11 +4,12 @@ let subjectCatalog;
 let quizData01;
 
 async function init() {
+  // const res = await fetch("/quizserver/api/subjects");
   const res = await fetch("/api/subjects");
   const data  = await res.json();
   subjectCatalog = new SubjectCatalog(data);
   console.log("subjectCatalog.getSubjectNames= ",subjectCatalog.getSubjectNames());
-  // createDivs();
+
   transitionTo("subject");
   setAppState("subject");
   loadSubjectButtons();
@@ -42,7 +43,6 @@ function show(panel) {
 }
 function hideAll() {
   Object.entries(panels).forEach(([key,value]) => {
-    // console.log(`${key}: ${value}`);
     document.getElementById(`${value}`).style.display = "none";
   } )
 }
@@ -134,24 +134,23 @@ function loadSubjectPanel(){
   subjectPanel.appendChild(subjectBlurb);
 
   let instructionTile = document.createElement("div"); 
-  instructionTile.className = "tile image";
+  instructionTile.className = "tile splash";
   instructionTile.innerHTML = `<a><b> Instructions 1; </b></a>\
   <img src="${STATIC_IMG_BASE}carousel.png" id ='carouselImg' alt='subject selection carousel buttons'>\
   <a> Select an Ancient Civilisation from the Subject Carousel above.</a>`;
   subjectPanel.appendChild(instructionTile);
 
   instructionTile = document.createElement("div"); 
-  instructionTile.className = "tile image";
+  instructionTile.className = "tile splash";
   instructionTile.innerHTML = "<a><b> Instructions 2;</b></a>\
   <a> Select a Quiz Category from the Categories that appear here.</a>"
   subjectPanel.appendChild(instructionTile);
 
   instructionTile = document.createElement("div"); 
-  instructionTile.className = "tile image";
+  instructionTile.className = "tile splash";
   instructionTile.innerHTML = "<a><b> Instructions 3;</b></a>\
   <a> Select a Question from the Quiz that appears here. Enjoy!</a>"
   subjectPanel.appendChild(instructionTile);
-  // subjectPanel.appendChild(subjectBlurb);
   subjectModal.appendChild(subjectPanel);
 }
 function loadScorePanel(){
@@ -190,7 +189,6 @@ async function loadSubjectButtons() {
           const subjectButton = document.createElement("div");
           const subjectText = document.createElement("div");
           subjectText.innerHTML = "<div class = 'subjectText'>"+subject.replace(/^\S+\s*/, '')+"</div>";
-          // subjectText.innerHTML = "<div class = 'subjectText'>"+subject.split(' ').slice(1).join(' ')+"</div>";
           const subjectImg = "subjectBtn/"+subject.replaceAll(" ", "") + "_btn.webp";
           subjectButton.id = subject;
           subjectButton.innerText = subject;
@@ -201,7 +199,6 @@ async function loadSubjectButtons() {
           buttonPanel.appendChild(subjectButton);
         });
       }
-    // buttonPanel.innerHTML += buttonPanel.innerHTML;
     subjectBanner.appendChild(leftNav);
     subjectBanner.appendChild(buttonPanel);
     subjectBanner.appendChild(rightNav);
@@ -246,16 +243,12 @@ async function selectCategory(event) {
         const category = event.target.innerText;
         subjectCatalog.currentCategory = category;
         const subject = subjectCatalog.currentSubject;
-        
-        // console.log("subjectCatalog.getCurrentCategory() = ", subjectCatalog.currentCategory);
         const res = await fetch(
+          // `/quizserver/api/single_quiz_by_category/${encodeURIComponent(subject)},${encodeURIComponent(category)}`
           `/api/single_quiz_by_category/${encodeURIComponent(subject)},${encodeURIComponent(category)}`
         );
         quizData01 = new QuizData(await res.json());
         quizData01.currentSubject = subjectCatalog.currentSubject;
-        // console.log(`res; =  ${res}`);
-        // console.log("quizData01 = ",quizData01);
-        // console.log(`quizData01.currentTopic; =  ${quizData01.currentTopic}`);
         transitionTo("question");
         loadQuestionModal();
         setCategoryImage();
@@ -345,7 +338,6 @@ function loadQuizModal(){
   quizPanel.className = "tilePanel";
   quizPanel.id = "quizPanel";
   // get appState data
-  // const select_data = appState.select_question;
   const select_question = quizData01.currentQuestion;
   console.log("363 select_question = ", select_question);
   // create question title for quiz modal
@@ -387,7 +379,7 @@ function loadQuizModal(){
   //add OK button
   const okbtn = document.createElement("button");
   okbtn.id = "okbtn";
-  okbtn.className = "panelbtn";
+  okbtn.className = "panelBtn";
   okbtn.innerText = "OK";
   okbtn.onclick = () => {
     transitionTo("question");
@@ -400,11 +392,7 @@ function loadQuizModal(){
 function selectAnswer(val){
   const aval = val.target.textContent
   setAppState("answer");
-  console.log("415 selectAnswer(val) = ", val);
-  // console.log("391 appState.select_question = ", appState.select_question);
   quizData01.currentAnswer = aval;
-  // console.log("395 appState.select_question.choices[aval] = ",appState.select_question.choices[aval]);
-  // appState.select_answer_val = appState.quiz.questions[val.target.value].answer_hash;
   transitionTo("answer");
   loadAnswerModal();
   checkAnswer();
@@ -487,7 +475,7 @@ async function loadAnswerModal(){
         //add OK button
       const okbtn = document.createElement("button");
       okbtn.id = "okbtn";
-      okbtn.className = "panelbtn";
+      okbtn.className = "panelBtn";
       okbtn.innerText = "OK";
       okbtn.onclick = () => {
         transitionTo("question");
@@ -525,7 +513,8 @@ async function showHint() {
 }
 async function getHint() {
       // console.log("ln 289 appState.select_question_id = ", appState.select_question_id);
-      // const res = await fetch(`/api/getHint/${encodeURIComponent(appState.select_question_id)}`);
+      // const res = await fetch("/quizserver/api/`/api/getHint/${encodeURIComponent(appState.select_question_id)}`);
+      // const res = await fetch("/api/`/api/getHint/${encodeURIComponent(appState.select_question_id)}`);
       // const data = await res.json();
       // console.log("line 255 getHint() = ", data)
       // appState.select_hint = data.explanation;

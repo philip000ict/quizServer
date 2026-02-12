@@ -1,0 +1,6 @@
+scratchpad.txt
+.gitignore
+.env
+docker-compose.yml
+Dockerfile
+dockerweb.html

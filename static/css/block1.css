@@ -63,7 +63,7 @@ header {
 .tile {
   width: 97%;
   cursor: pointer;
-  height: 10%;
+  height: 40px;
   display: flex;              /* make container a flexbox */
   flex-direction: column;
   align-items: center;        /* vertical centering */
@@ -79,15 +79,15 @@ header {
 .tile.image{
   height: auto;
 }
-.tile.splash{
-  height: 20%;
-}
 .tile.score{
   font: 5em;
   background-color: royalblue;
   color: antiquewhite;
   height: 40%;
   width:20%;
+}
+.tile.splash{
+  height: 20%;
 }
 .tile.q {
   height: fit-content;
@@ -104,8 +104,7 @@ header {
   font: 1em sans-serif;
 }
 .title {
-  background-color: aliceblue;
-  color: royalblue;
+  background-color: linen;
   cursor: not-allowed;
   height: 160px;
   font: 1.6em sans-serif;
@@ -117,6 +116,7 @@ header {
 #scoreBlock{
   flex-direction: row;
   justify-content:space-evenly;
+  align-items: center;
 }
 #buttonPanel{
     display: flex;
@@ -278,7 +278,7 @@ header {
   font: 1.4em sans-serif;
   }
 .tilePanel {
-  height: 70vh;
+  height:70vh;
 }
 .imageSrc {
     height: 40vw;
@@ -302,23 +302,21 @@ header {
   .score{
     width: 40vw;
   }
-#scoreBlock {
-    margin-top:10px;
-    height: 50px;
-    margin-top: 10px;
-    align-items: center;
+  #scoreBlock {                                         
+    margin-top:10px;                                              
+    height: 50px;                                           
+    margin-top: 10px;                     
+    align-items: center;                              
   } 
-.tile.score {
-    margin-bottom: 0;   
+
   }
-#splashPanel {
-  height: auto;
-  }
- }
 
     @media screen and (max-width: 480px) {
   p {
     font-size: 1em;
+  }
+  a {
+    font-size: 0.8em;
   }
   .panelbtn{
     width: 98%;
@@ -328,10 +326,10 @@ header {
   }
   .subjectbtn{
     margin: 10px 0 0 0;
-    width: 75px;
+    width: 60px;
   }
   .subjectbtn img{
-    height: 65px;
+    height: 50px;
   }
   #imageName {
     font-size: 10vw;
@@ -348,9 +346,13 @@ header {
   .quizBlock{
     width: 96vw;
    }  
+  .tile{
+    font: 0.8em sans-serif;
+  
+  }
   .title{
     height: 80px;
-    font: 1.6em sans-serif;
+    font: 1.2em sans-serif;
   }
   .title a{
     font: 0.8em sans-serif;

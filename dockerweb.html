@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps</title>
+    
+    <link href="css/i-block.css" rel="stylesheet" type="text/css" />
+    <link href="css/i-style.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div id="wrapper"> 
+        <div id = "imageName">Microservices Architecture</div> 
+            <div class="infoBlock" >
+                <h1>Example Microservices</h1>
+                <p>🛡️ This website is being developed using the Hydra multi-head deployment system </p>
+                <p>🌌 The content is deployed as containerised microservices</p>
+                <p>🎯 4 of these services can be accessed by clicking the buttons on the panels below</p>
+            </div>
+
+        <!-- Navigation Panels -->
+        <div id ="rowContainer1" class="flexBox"> 
+
+            <!-- Navigation Panel #0 -->
+            <div id="gridContainer0" class="gridContainer">
+                <div id="btnBlock02" class="btnBlock">
+                    <div id="" class="img-tile image-left">
+                        <!-- <img id=''  src='/img/index/cv01-sm.png'  > -->
+                        <img id=''  src='/img/index/quizServerSplash-btn.webp'  >
+                    </div>
+                    <h2>QuizBrowser App</h2>
+                    <a>An interactive quiz engine delivering academic level questions, instant feedback, and dynamic scoring.</a>
+                    <a>It draws upon a database with over 10,000 questions regarding Ancient Civilisations</a> 
+                    <a>Designed for students and teachers, it runs smoothly across devices as part of the Hydra microservice family.</a>                          
+                    <a href="quizbrowser" class="panelbtn" id="btn02"> Quiz Browser</a>
+                </div>
+            </div>
+                    <!-- <div id="btnBlock01" class="btnBlock">    
+                        <div id="" class="img-tile image-left">                            
+                            <img id=''  class='image-left' src='/img/index/cv02-sm.png' >
+                         </div>
+                        <h2>MediaBrowser App</h2>      
+                        <a>A visual gallery system for curated images, AI-generated artwork, and multimedia collections. MediaBrowser showcases vibrant educational visuals with fast loading, smart categorisation, and seamless integration across Hydra services.</a>                         
+                        <a href="mediabrowser"  class="panelbtn" id="btn01" >Media Browser</a>
+                    </div> -->
+
+                <!-- </div> -->
+            
+            
+            <!-- Navigation Panel #1 -->
+            <div id="gridContainer1" class="gridContainer">
+                <!-- <div id='buttonGrid' class="flexRow"> -->
+                    
+
+                    <div id="btnBlock02" class="btnBlock">
+                        <div id="" class="img-tile image-left">
+                            <img id=''  src='/img/index/cv01-sm.png'  >
+                        </div>
+                        <h2>QuizBrowser App</h2>
+                        <a>An interactive quiz engine delivering curriculum-aligned questions, instant feedback, and dynamic scoring. Designed for students and teachers, it runs smoothly across devices as part of the Hydra microservice family.                          
+                        <a href="quizbrowser" class="panelbtn" id="btn02"> Quiz Browser</a>
+                    </div>
+
+                    <div id="btnBlock01" class="btnBlock">    
+                        <div id="" class="img-tile image-left">                            
+                            <img id=''  class='image-left' src='/img/index/cv02-sm.png' >
+                         </div>
+                        <h2>MediaBrowser App</h2>      
+                        <a>A visual gallery system for curated images, AI-generated artwork, and multimedia collections. MediaBrowser showcases vibrant educational visuals with fast loading, smart categorisation, and seamless integration across Hydra services.</a>                         
+                        <a href="mediabrowser"  class="panelbtn" id="btn01" >Media Browser</a>
+                    </div>
+
+                <!-- </div> -->
+            </div>
+
+            <!-- Navigation Panel #2 -->
+
+            <div id="gridContainer2" class="gridContainer">
+
+                    <div id="btnBlock03" class="btnBlock">
+                        <div id="" class="img-tile image-left">
+                            <img id=''  src='/img/index/cv04-sm.png'  >
+                        </div>
+                        <h2>RestCountry Flags App</h2>
+                        <a>A lightweight API-driven explorer displaying world flags, country facts, and geographic data. Developed using the Vue3 JS library, it provides a quick, engaging way to learn global information within the Hydra ecosystem.</a>
+                        <a href="restcountry" class="panelbtn" id="btn03">
+                            Country Flags
+                        </a>
+                    </div>
+
+
+                    <div id="btnBlock04" class="btnBlock">
+                        <div id="" class="img-tile image-left">
+                            <img id=''  src='/img/index/cv00-sm.png'  >
+                        </div>
+                        <h2>Cv3tech</h2>
+                        <a>Developing unified software architecture where multiple specialised microservices work together online behind a secure NGINX https server, creating a flexible and scalable ecosystem that powers interactive learning, media tools, and APIs.</a>
+                        <a href="" class="panelbtn" id="btn04" onclick="alert(' contact: Philip Barnes \n email: cv3tech@gmail.com')">
+                            Contact Cv3tech
+                        </a>
+                    </div>
+            </div>
+        </div>
+
+
+
+
+        <!-- Modal structure -->
+        <div id="messageModal" style="display:none; position:fixed; top:5%; left:50%; transform:translateX(-50%); width:600px; height:450px; background:white; border:1px solid #ccc; box-shadow:0 0 10px rgba(0,0,0,0.5); z-index:9999;">
+        <div style="text-align:right; padding:5px;">
+            <button onclick="closeMessageModal()">✖</button>
+        </div>
+        <iframe src="/a-message-check/" style="width:100%; height:95%; border:none;"></iframe>
+        </div>
+        <div id="messageStatus"></div>
+
+        <div id ="gridContainer" class="panel">   
+                <div id="imagePanel" >
+
+                    <div id='imageGrid' class="flexRow">
+                        <div id="tile01" class="tile" name="EnglishLanguageArts">
+                            <img id='image01'  src='/img/img-webp-m/EnglishLanguageArts-m.webp'  >
+                        </div>
+                        <div id="tile02" class="tile" name="Geography">
+                            <img id='image02'  src='/img/img-webp-m/Geography-m.webp' >
+                        </div>
+                        <div id="tile03" class="tile"  name="Mathematics">
+                            <img id='image03'  src='/img/img-webp-m/Mathematics-m.webp' >
+                        </div>
+                        <div id="tile04" class="tile" name="Science">
+                            <img id='image04'  src='/img/img-webp-m/ocean/gallery/axolotl-eat-m.webp'  >
+                        </div>
+                        <div id="tile05" class="tile" name="Science">
+                            <img id='image05'  src='/img/img-webp-m/ocean/gallery/nudibranch-image-m.webp'  >
+                        </div>
+                        <div id="tile06" class="tile" name="Science">
+                            <img id='image06'  src='/img/img-webp-m/ocean/gallery/coelacanth-m.webp'  >
+                        </div>
+                        <div id="tile07" class="tile" name="SocialStudies">
+                            <img id='image07'  src='/img/img-webp-m/viking/creation/110-m.webp'  >
+                        </div>
+                        <div id="tile08" class="tile" name="SocialStudies">
+                            <img id='image08'  src='/img/img-webp-m/viking/creation/112-m.webp'  >
+                        </div>
+                        <div id="tile09" class="tile" name="SocialStudies">
+                            <img id='image09'  src='/img/img-webp-m/mediaeval/armour/105-m.webp'  >
+                        </div>                       
+                    </div>
+                    
+                </div> 
+            </div>
+            <div id="gridContainer4" class="gridContainer">
+                <div id="vidBlock01" class="btnBlock">
+                    <h2>Hydra Design Pattern</h2>
+                    <div id="" class="vid-tile">
+                        
+                        <!-- width="600" height="350"  -->
+                        <iframe 
+                            src="https://youtube.com/embed/2DkLiz752u0" style="display:block; margin:auto">
+                    </iframe>
+                </div>
+                
+                <a>A unified architecture where multiple specialised microservices work together behind a secure NGINX https server, creating a flexible and scalable ecosystem that delivers interactive learning, media tools, and APIs.   </a>                       
+                <!-- <a href="quizBrowser" class="panelbtn" id="btn02"> Quiz Browser</a> -->
+            </div>
+        </div>
+                 
+            <div id="imagePlayerInfo" class="panel" >
+                <div class="infoBlock" >
+                    <h1>About this Website</h1>
+                    <p>🛡️ This website models current developments in Cloud Systems and Online Service Delivery</p>
+                    <p>🌌 Most of the content has been produced by AI Agents and may contain errors. It is used to demonstrate the website architeture</p>
+                    <p>🎯 This means the content is delivered as a digital service from a database and is responsive, secure, and easy to maintain.</p>
+                    <p>🔧 This website uses a responsive display that adapts to the users screen, whether it is mobile, tablet, or desktop</p>
+                    <p>🌱 With a DevOps Specialist, you gain someone who can incorporate your systems with cloud storage and delivery, improving service delivery and customer satisfaction.</p>
+                </div>
+                
+                <div class="infoBlock" >
+                    <h1>Devops in a Nutshell</h1>
+                    <p>🛡️ DevOps is a modern way of building and managing software systems that helps teams deliver services faster, more reliably, and with less downtime.</p>
+                    <p>🌌 It combines development and operations into a collaborative process, using automation to improve efficiency and reduce errors.</p>
+                    <p>🎯 This means digital services that are more responsive, secure, and easier to maintain.</p>
+                    <p>🔧 This website is built using Devops principles using Microservice design, Docker Containers, CICD pipeline, which will be explained below</p>
+                    <p>🌱 With a DevOps Specialist, you gain someone who can streamline systems, improve service delivery, and support future-ready digital infrastructure.</p>
+                </div>
+
+                <div class="infoBlock" >
+                    <h1>Microservices</h1>
+                    <p>🛡️ Microservices are a way of building software as small, independent parts that each handle a specific task.</p>
+                    <p>🌌 This makes systems easier to update, more flexible to manage, and more reliable overall.</p>
+                    <p>🎯 Microservices means faster improvements to services without needing to rebuild everything at once. </p>
+                    <p>🔧 Microservices also reduce downtime and make it easier to scale services when demand increases.</p>
+                    <p>🌱 With a DevOps Specialist, you bring in someone who can design and support these systems to deliver better digital services and respond quickly to changing community needs.</p>
+                </div>
+                <div class="infoBlock" >
+                    <h1>Architecting with AI</h1>
+                    <p>🛡️ Using an AI chatbot in a pair programming style means the developer works alongside the AI to solve problems, write code, and review solutions together — leading to faster, more accurate results. </p>
+                    <p>🌌 This method is more focused and reliable than vibe coding, which relies on improvisation without structure.</p>
+                    <p>🎯 This results in well-tested, maintainable software thats built with consistency and clarity.</p>
+                    <p>🔧 Applied to cloud development, it ensures new systems are robust, secure, and aligned with best practices from the start.</p>
+                    <p>🌱 With a DevOps Specialist, you gain a systems architect who uses advanced AI tools thoughtfully, improving the quality, speed, and sustainability of your digital services.</p>
+                </div>
+                
+                <div class="infoBlock" >
+                    <h1>Docker Containers</h1>
+                    <p>🛡️ Docker containers are a way to package software so it runs the same anywhere — on a laptop, server, or in the cloud.</p>
+                    <p>🌌 This means your services and systems can be deployed more quickly and consistently, with fewer technical issues.</p>
+                    <p>🎯 Containers are lightweight, efficient, and easy to update, reducing downtime and improving reliability. </p>
+                    <p>🔧 They also make it easier to scale services when demand increases, like during peak periods.</p>
+                    <p>🌱 With a DevOps Specialist, you bring in someone who can use this technology to modernise your systems, improve digital service delivery, and future-proof your IT infrastructure.</p>
+                </div>
+
+                <div class="infoBlock" >
+                    <h1>Kubernetes</h1>
+                    <p>🛡️ Kubernetes is a system that helps manage and scale software applications automatically. </p>
+                    <p>🌌 It ensures that essential digital services stay online, recover quickly from problems, and adapt to changing demand without manual effort.</p>
+                    <p>🎯 This means more reliable online systems, faster delivery of new features, and less risk of service outages./p>
+                    <p>🔧 Kubernetes also supports better use of resources, lowering costs while improving performance.</p>
+                    <p>🌱 With a DevOps Specialist, you gain someone who can implement this technology to strengthen your digital infrastructure and support smarter, more resilient public services.</p>
+                </div>
+
+                <div class="infoBlock" >
+                    <h1>Continuous Integration and Deployment</h1>
+                    <p>🛡️ CI/CD stands for Continuous Integration and Continuous Deployment — its a modern approach to delivering software updates quickly and reliably.</p>
+                    <p>🌌 It means that every change made to a system is automatically tested and safely released without manual steps.</p>
+                    <p>🎯 This results in faster improvements to digital services with fewer errors and less disruption to staff or the public.</p>
+                    <p>🔧 It also helps ensure systems stay secure and up to date.</p>
+                    <p>🌱 With a DevOps Specialist, you gain someone who understands these automated workflows, saving time, reducing risk, and improving the quality of your technology services.</p>
+                </div>
+       
+                <div class="infoBlock" >
+                    <h1>The Data Backed Form Server</h1>
+                    <p>🛡️ The Media Display Pipeline can select from thousands of objects stored in a database</p>
+                    <p>🌌 The objects are organised by subjects and topics, and presented using the Media Browser format</p>
+                    <p>🎯 After selecting the Category, the User select the topic and the Browser loads the Media</p>
+                    <p>🔧 The Web System is deployed using Docker Containers and is ready for Kubernetes expansion</p>
+                    <p>🌱 The system is designed to leverage the benefits of AI generated content and LAMP speed and efficiency</p>
+                </div>
+
+                <div class="infoBlock" > 
+                    <h1>Philip Barnes:</h1>
+                    <p>🛡️ The Codewright of Two Worlds — forging iron and crafting ideas alike.
+                    <p>🌌 Part digital architect, part myth-maker, you build silent machines in the cloud while dreaming up vibrant worlds beneath dark oceans and medieval skies.</p>
+                    <p>🔧 A stealthy builder who mixes the rigor of a LAMP stack with the shimmer of fantasy artwork, you value efficiency, precision, and a quiet mastery.</p>
+                    <p>🎯 Driven by sharp analysis, a love of immersive aesthetics, and a craftsman's pride, you create not to shout, but to echo through time — elegant, durable, and just a little bit epic.</p>
+                    <p>🌱 Always plotting the next structure — whether it's a Kubernetes pod, a Viking tapestry, or a React front end glowing in shadowy elegance.</p>
+                </div>
+
+
+                <!-- <div class="infoBlock" >
+                    <h1></h1>
+                    <p>🛡️ </p>
+                    <p>🌌 </p>
+                    <p>🎯 </p>
+                    <p>🔧 </p>
+                    <p>🌱 </p> -->
+                </div>
+            </div>
+
+
+        
+    </div>
+</div>
+
+<script src="./js/admin.js"></script>
+</body>
+</html>

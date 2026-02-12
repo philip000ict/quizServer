@@ -1,13 +1,9 @@
 services:
   quizserver:
-    image: quizserver:latest
-    container_name: quizserver
+    image: philip000ict/quizserver:v2.1
+    container_name: quizserver-v2.1
     networks:
       - shared-db-net
-    volumes:
-      - ./:/app
-      - ./templates:/app/templates
-      - ./static/img:/app/static/img
     env_file:
       - .env
     ports:

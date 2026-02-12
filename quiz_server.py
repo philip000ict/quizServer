@@ -1,10 +1,19 @@
 from flask import Flask, render_template, jsonify, request
+from werkzeug.middleware.proxy_fix import ProxyFix
 import mysql.connector
 import os, random, hashlib
 from dotenv import load_dotenv
 
 load_dotenv()
 app = Flask(__name__, template_folder='templates')
+
+app.wsgi_app = ProxyFix(
+    app.wsgi_app,
+    x_proto=1,
+    x_host=1,
+    x_prefix=1,
+)
+
 db_table = 'ancient_quiz'
 def get_db():
     return mysql.connector.connect(
@@ -96,11 +105,6 @@ def random_quiz():
 def single_quiz_by_subject(subject):
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
-
-    # Step 1: Get random subject
-    # cursor.execute("SELECT DISTINCT subject FROM ancient_quiz ORDER BY RAND() LIMIT 1")
-    # subject = cursor.fetchone()["subject"]
-    # print("subject = ". subject  )
     # Step 2: Get random topic from that subject
     cursor.execute(f"SELECT DISTINCT category FROM {db_table} WHERE subject = %s ORDER BY RAND() LIMIT 1", (subject,))
     category = cursor.fetchone()["category"]
