@@ -139,15 +139,19 @@ function loadSubjectPanel(){
   subjectPanel.appendChild(instructionTile);
 
   instructionTile = document.createElement("div"); 
-  instructionTile.className = "tile splash";
-  instructionTile.innerHTML = "<a><b> Instructions 2;</b></a>\
-  <a> Select a Quiz Category from the Categories that appear here.</a>"
+  instructionTile.className = "tile splash left";
+  instructionTile.innerHTML = `
+  <img src="${STATIC_IMG_BASE}quizServerCategoryPanel-btn.webp" class ='btnLeft' alt='quizServer Category Panel button image'>\
+  <div><a><b> Instructions 2;</b></a><br>\
+  <a> Select a Quiz Category from the Categories that appear here.</a></div>`
   subjectPanel.appendChild(instructionTile);
 
   instructionTile = document.createElement("div"); 
-  instructionTile.className = "tile splash";
-  instructionTile.innerHTML = "<a><b> Instructions 3;</b></a>\
-  <a> Select a Question from the Quiz that appears here. Enjoy!</a>"
+  instructionTile.className = "tile splash left";
+  instructionTile.innerHTML = `
+  <img src="${STATIC_IMG_BASE}quizServerQuizPanel-btn.webp" class ='btnLeft' alt='quizServer quiz Panel button image'>\
+  <div><a><b> Instructions 3;</b></a><br>\
+  <a> Select a Question and play the Quiz that appears next. Enjoy!</a></div>`
   subjectPanel.appendChild(instructionTile);
   subjectModal.appendChild(subjectPanel);
 }

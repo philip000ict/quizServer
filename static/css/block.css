@@ -82,6 +82,9 @@ header {
 .tile.splash{
   height: 20%;
 }
+.tile.splash.left{
+  flex-direction: row;
+}
 .tile.score{
   font: 5em;
   background-color: royalblue;
@@ -190,6 +193,9 @@ header {
 .btnDiv{
    background-color: blanchedalmond;
    margin: 5px 15px;
+}
+.btnLeft{
+  float:left;
 }
 #applayer {
   background-size: contain;
