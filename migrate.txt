@@ -1,0 +1,85 @@
+CREATE TABLE subjects (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    subject_id INT NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    slug VARCHAR(255),
+    FOREIGN KEY (subject_id) REFERENCES subjects(id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE topics (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    category_id INT NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    slug VARCHAR(255),
+    FOREIGN KEY (category_id) REFERENCES categories(id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE questions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    topic_id INT NOT NULL,
+    question TEXT NOT NULL,
+    correct_choice TEXT NOT NULL,
+    distractor1 TEXT,
+    distractor2 TEXT,
+    distractor3 TEXT,
+    explanation TEXT,
+    difficulty_score FLOAT DEFAULT NULL,
+    entropy_score FLOAT DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (topic_id) REFERENCES topics(id)
+        ON DELETE CASCADE
+);
+
+INSERT INTO subjects (name)
+SELECT DISTINCT subject FROM ancient_quiz;
+
+
+INSERT INTO categories (subject_id, name)
+SELECT DISTINCT s.id, aq.category
+FROM ancient_quiz aq
+JOIN subjects s ON s.name = aq.subject;
+
+INSERT INTO topics (category_id, name)
+SELECT DISTINCT c.id, aq.topic
+FROM ancient_quiz aq
+JOIN subjects s ON s.name = aq.subject
+JOIN categories c 
+    ON c.name = aq.category 
+    AND c.subject_id = s.id;
+
+
+INSERT INTO questions (
+    topic_id,
+    question,
+    correct_choice,
+    distractor1,
+    distractor2,
+    distractor3,
+    explanation
+)
+    SELECT 
+        t.id,
+        aq.question,
+        aq.correct_choice,
+        aq.distractor1,
+        aq.distractor2,
+        aq.distractor3,
+        aq.explanation
+    FROM ancient_quiz aq
+    JOIN subjects s ON s.name = aq.subject
+    JOIN categories c 
+        ON c.name = aq.category 
+        AND c.subject_id = s.id
+    JOIN topics t 
+        ON t.name = aq.topic
+        AND t.category_id = c.id;

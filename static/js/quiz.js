@@ -4,11 +4,9 @@ let subjectCatalog;
 let quizData01;
 
 async function init() {
-  // const res = await fetch("/quizserver/api/subjects");
   const res = await fetch("/api/subjects");
   const data  = await res.json();
   subjectCatalog = new SubjectCatalog(data);
-  console.log("subjectCatalog.getSubjectNames= ",subjectCatalog.getSubjectNames());
 
   transitionTo("subject");
   setAppState("subject");
@@ -180,97 +178,135 @@ function loadPrintPage(){
 
 }
 async function loadSubjectButtons() {
-    const subjectBanner = document.getElementById("carousel-wrapper");
-    const buttonPanel = document.getElementById("carousel");
-    const leftNav = document.getElementById("leftNav");
-    const rightNav = document.getElementById("rightNav");
-    if (appState.subjects) {
-        subjectCatalog.getSubjectNames().forEach(subject => {
-          const subjectButton = document.createElement("div");
-          const subjectText = document.createElement("div");
-          subjectText.innerHTML = "<div class = 'subjectText'>"+subject.replace(/^\S+\s*/, '')+"</div>";
-          const subjectImg = "subjectBtn/"+subject.replaceAll(" ", "") + "_btn.webp";
-          subjectButton.id = subject;
-          subjectButton.innerText = subject;
-          subjectButton.className = "subjectbtn";
-          subjectButton.innerHTML = `<img id = "${subject}" class = "btnImg" src="${STATIC_IMG_BASE}${subjectImg}" alt="${subject}">`;
-          subjectButton.appendChild(subjectText)
-          subjectButton.addEventListener('click', onchangeSubjectSelect);
-          buttonPanel.appendChild(subjectButton);
-        });
-      }
-    subjectBanner.appendChild(leftNav);
-    subjectBanner.appendChild(buttonPanel);
-    subjectBanner.appendChild(rightNav);
-    carousel();
-};
-function onchangeSubjectSelect(event){ 
+  const subjectBanner = document.getElementById("carousel-wrapper");
+  const buttonPanel = document.getElementById("carousel");
+  const leftNav = document.getElementById("leftNav");
+  const rightNav = document.getElementById("rightNav");
+
+  if (subjectCatalog) {
+
+    subjectCatalog.getSubjectNames().forEach(subjectObj => {
+
+      const subjectButton = document.createElement("div");
+      const subjectText = document.createElement("div");
+
+      const subjectId = subjectObj.id;
+      const subjectName = subjectObj.name;
+
+      subjectText.innerHTML =
+        `<div class="subjectText">${subjectName.replace(/^\S+\s*/, '')}</div>`;
+
+      const subjectImg =
+        "subjectBtn/" + subjectName.replaceAll(" ", "") + "_btn.webp";
+
+      subjectButton.dataset.subjectId = subjectId;   // 🔥 critical
+      subjectButton.className = "subjectbtn";
+
+      subjectButton.innerHTML =
+        `<img class="btnImg" 
+              src="${STATIC_IMG_BASE}${subjectImg}" 
+              alt="${subjectName}">`;
+
+      subjectButton.appendChild(subjectText);
+
+      subjectButton.addEventListener("click", (e) => {
+        const sid = e.currentTarget.dataset.subjectId;
+        subjectCatalog.currentSubject = sid;
+        onchangeSubjectSelect(sid);
+      });
+
+      buttonPanel.appendChild(subjectButton);
+    });
+  }
+
+  subjectBanner.appendChild(leftNav);
+  subjectBanner.appendChild(buttonPanel);
+  subjectBanner.appendChild(rightNav);
+
+  carousel();
+}
+
+function onchangeSubjectSelect(subjectId){ 
     setAppState("subject");
-    console.log(`The selected event =  ${event.target.id}`);
-    subjectCatalog.currentSubject = event.target.id;
-    console.log("subjectCatalog.getCurrentSubject() = ",subjectCatalog.currentSubject);
+
+    subjectCatalog.currentSubject = subjectId;
+
     transitionTo("category");
-    loadCategoryPanel(event.target.id);
+    loadCategoryPanel(subjectId);
     setSubjectImage();
-};
-function loadCategoryPanel(subject){
+}
+
+function loadCategoryPanel(subjectId){
+
     const categoryModal = document.getElementById("categoryModal");
     categoryModal.innerHTML = "";
-    document.getElementById("quizHeader").innerHTML='<b>'+appState.subject+'</b>';
+
+    const subjectObj = subjectCatalog.raw[String(subjectId)];
+
+    if (!subjectObj) return;
+
+    document.getElementById("quizHeader").innerHTML =
+        `<b>${subjectObj.name}</b>`;
+
     const categoryPanel = document.createElement("div");
     categoryPanel.className = "tilePanel";
+
     const quizHeader = document.createElement("div");
-    quizHeader.className = "tile title"
-    quizHeader.innerText = subject;
+    quizHeader.className = "tile title";
+    quizHeader.innerText = subjectObj.name;
+
     categoryPanel.appendChild(quizHeader);
-    if (subject) {
-        subjectCatalog
-          .getCategoriesFor(subject)
-          .forEach(category => {
-              const ctile = document.createElement("div");
-              ctile.id = category;
-              ctile.innerHTML = category;
-              ctile.className = "tile";
-              ctile.addEventListener('click', selectCategory);
-              categoryPanel.appendChild(ctile);
-              });
-        }
+
+    subjectCatalog
+      .getCategoriesFor(subjectId)
+      .forEach(categoryObj => {
+
+          const ctile = document.createElement("div");
+
+          ctile.className = "tile";
+          ctile.dataset.categoryId = categoryObj.id;   // 🔥 critical
+          ctile.innerText = categoryObj.name;          // display only
+
+          ctile.addEventListener("click", (e) => {
+              const cid = e.currentTarget.dataset.categoryId;
+              subjectCatalog.currentCategory = cid;
+              selectCategory(cid);
+          });
+
+          categoryPanel.appendChild(ctile);
+      });
+
     categoryModal.appendChild(categoryPanel);
-};
-async function selectCategory(event) {
-  showSpinner();              // 🔒 lock UI immediately
-    try {
-        const category = event.target.innerText;
-        subjectCatalog.currentCategory = category;
-        const subject = subjectCatalog.currentSubject;
-        const res = await fetch(
-          // `/quizserver/api/single_quiz_by_category/${encodeURIComponent(subject)},${encodeURIComponent(category)}`
-          `/api/single_quiz_by_category/${encodeURIComponent(subject)},${encodeURIComponent(category)}`
-        );
-        quizData01 = new QuizData(await res.json());
-        quizData01.currentSubject = subjectCatalog.currentSubject;
-        transitionTo("question");
-        loadQuestionModal();
-        setCategoryImage();
-        setHeader();
-    } catch (err) {
-        console.error("Quiz load failed", err);
-        alert("Failed to load quiz. Please try again.");
+}
+
+async function selectCategory(categoryId) {
+
+  showSpinner();
+
+  try {
+    
+    quizData01 = await QuizData.create(categoryId, subjectCatalog.currentSubject);
+    quizData01.currentSubject = subjectCatalog.currentSubject;
+    quizData01.currentSubject_string = subjectCatalog.getSubjectNameById(subjectCatalog.currentSubject);
+    quizData01.currentCategory = subjectCatalog.currentCategory;
+    quizData01.currentCategory_string = subjectCatalog.getCategoryNameById(categoryId);
+    transitionTo("question");
+    loadQuestionModal();
+    setCategoryImage();
+    setHeader();
+
+  } catch (err) {
+    console.error("Quiz load failed", err);
+    alert("Failed to load quiz. Please try again.");
 
   } finally {
-      setTimeout(() => {
-        console.log("This runs after 0.5 seconds");
-        }, 1000); // 500 milliseconds = 0.5 seconds
-
-       hideSpinner();             // 🔓 always unlock
+    hideSpinner();
   }
 }
+
 function loadQuestionModal(){
     setAppState("quiz");
     // default display here
-    console.log(`quizData01.currentSubject; =  ${quizData01.currentSubject}`);
-    console.log(`quizData01.currentCategory; =  ${quizData01.currentCategory}`);
-    console.log(`quizData01.currentTopic; =  ${quizData01.currentTopic}`);
     const subject = quizData01.currentSubject;
     const category = quizData01.currentCategory;
     const topic = quizData01.currentTopic;
@@ -283,6 +319,7 @@ function loadQuestionModal(){
     const quizTitle = document.createElement("div");
     quizTitle.id = 'quizTitle';
     quizTitle.className = "tile title";
+    // console.log("quizTitle.innerHTML = quizData01.quizTitle; = ",quizData01.quizTitle)
     quizTitle.innerHTML = quizData01.quizTitle;
     
     questionPanel.appendChild(quizTitle);
@@ -308,25 +345,21 @@ function loadQuestionModal(){
       }
     questionPanel.appendChild(okbtn);
     questionModal.appendChild(questionPanel)
-
-      
 };
+
 function selectQuestion(val){
   setAppState("question");
   const qval = val.target.value;
   const qid = val.target.id;
-  console.log("qval = ",qval,", qid = ",qid)
   quizData01.currentQuestion = qval;
   quizData01.currentQuestionTileID = qid;
-  console.log("quizData01.currentQuestion = ", quizData01.currentQuestion);
   
   loadQuizModal();
   transitionTo("quiz");
   //add points in play
-  
 }
+
 function loadQuizModal(){
-  console.log('document.getElementById("countBox").innerText = ',document.getElementById("countBox").textContent)
   const countBox = document.getElementById("countBox");
   let points = document.getElementById("countBox").textContent;
   points = "2";
@@ -339,16 +372,14 @@ function loadQuizModal(){
   quizPanel.id = "quizPanel";
   // get appState data
   const select_question = quizData01.currentQuestion;
-  console.log("363 select_question = ", select_question);
   // create question title for quiz modal
   const qtitle = document.createElement("div");
   qtitle.className = "tile title";
   qtitle.id = "quizTitle";
-  console.log("quizData01.quizTitle() = ",quizData01.quizTitle);
   const titleText = quizData01.quizTitle;
   qtitle.innerHTML = titleText;
   quizPanel.appendChild(qtitle);
-// create question title for quiz modal
+  // create question title for quiz modal
   const qtile = document.createElement("div");
   qtile.className = "tile q";
   qtile.id = "quizQuestion";
@@ -356,7 +387,6 @@ function loadQuizModal(){
   quizPanel.appendChild(qtile);
   //load answer tiles  
   let atileId = 0
-  // select_data.choices.forEach(choice => {
   quizData01.currentChoices.forEach(choice => {
         const atile = document.createElement("div");
         atile.innerText = choice;
@@ -400,16 +430,12 @@ function selectAnswer(val){
 async function checkAnswer(){
   // get answer tile
   const answer_tile = document.getElementById("answer_tile");
-  console.log("quizData01.currentAnswer = ",quizData01.currentAnswer);
   const choice = quizData01.currentAnswer
   // convert answer text to sha256
   const userHash = await sha256(choice);
-  console.log("user Hash = ",userHash);
   // get hash for correct answer
   const answer_hash = quizData01.answerHash;
-  console.log("answer hash = ",answer_hash);
-  //chech if hashes match and do the arbitration
-  console.log("appState.question_id = ",quizData01.currentQuestionTileID);
+  //check if hashes match and do the arbitration
   if (userHash === answer_hash){
       answer_tile.style = "background-color: springgreen;"
       document.getElementById(quizData01.currentQuestionTileID).style = "background-color: springgreen;"
@@ -483,12 +509,29 @@ async function loadAnswerModal(){
       answerPanel.appendChild(okbtn);
       answerModal.appendChild(answerPanel);
 }
+
 function setSubjectImage(){
-    const currentSubject = subjectCatalog.currentSubject;
-    console.log("currentSubject",currentSubject);
-    let subjectImage = currentSubject.replaceAll(" ", "") + ".webp";
-    document.getElementById("subjectImage").innerHTML = `<img src="${STATIC_IMG_BASE}${subjectImage}" alt="${appState.subject}">`;
-};
+
+    const subjectId = subjectCatalog.currentSubject;
+    if (!subjectId) return;
+
+    const subjectName = subjectCatalog.getSubjectNameById(subjectId);
+    if (!subjectName) return;
+
+    const subjectImage =
+        subjectName.replaceAll(" ", "") + ".webp";
+
+    document.getElementById("subjectImage").innerHTML =
+        `<img src="${STATIC_IMG_BASE}${subjectImage}" 
+              alt="${subjectName}">`;
+}
+
+// function setSubjectImage(){
+//     const currentSubject = subjectCatalog.currentSubject;
+//     console.log("currentSubject",currentSubject);
+//     let subjectImage = currentSubject.replaceAll(" ", "") + ".webp";
+//     document.getElementById("subjectImage").innerHTML = `<img src="${STATIC_IMG_BASE}${subjectImage}" alt="${appState.subject}">`;
+// };
 function setCategoryImage(){
     setSubjectImage()
     // let subjectImage = appState.subject.replaceAll(" ", "") + "/"; 
@@ -526,7 +569,7 @@ function showSpinner() {
 }
 function hideSpinner() {
         setTimeout(() => {
-        console.log("This runs after 0.5 seconds");
+        // console.log("This runs after 0.5 seconds");
         }, 1000); // 500 milliseconds = 0.5 seconds
   document.getElementById("quiz-loading").classList.add("hidden");
 }

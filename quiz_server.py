@@ -32,25 +32,106 @@ def index():
     return render_template("index.html")
 
 @app.route("/api/subjects")
-def get_subjects():
+def get_subject_tree():
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute(f"SELECT DISTINCT subject, category FROM {db_table} ORDER BY subject, category")
+
+    cursor.execute("""
+        SELECT 
+            s.id AS subject_id,
+            s.name AS subject_name,
+            c.id AS category_id,
+            c.name AS category_name
+        FROM subjects s
+        LEFT JOIN categories c ON c.subject_id = s.id
+        ORDER BY s.id, c.id
+    """)
+
     rows = cursor.fetchall()
     cursor.close()
     conn.close()
 
-    # Group categories under each subject
-    grouped = {}
-    for row in rows:
-        subj = row["subject"]
-        cat = row["category"]
-        if subj not in grouped:
-            grouped[subj] = []
-        if cat not in grouped[subj]:
-            grouped[subj].append(cat)
-    return jsonify(grouped)
+    tree = {}
 
+    for row in rows:
+        sid = row["subject_id"]
+        cid = row["category_id"]
+
+        if sid not in tree:
+            tree[sid] = {
+                "id": sid,
+                "name": row["subject_name"],
+                "categories": []
+            }
+
+        if cid:
+            tree[sid]["categories"].append({
+                "id": cid,
+                "name": row["category_name"]
+            })
+
+    return jsonify(list(tree.values()))
+
+@app.route("/api/subjects_topics")
+def get_subject_tree_topics():
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT 
+            s.id AS subject_id,
+            s.name AS subject_name,
+            c.id AS category_id,
+            c.name AS category_name,
+            t.id AS topic_id,
+            t.name AS topic_name
+        FROM subjects s
+        LEFT JOIN categories c ON c.subject_id = s.id
+        LEFT JOIN topics t ON t.category_id = c.id
+        ORDER BY s.id, c.id, t.id
+    """)
+
+    rows = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    tree = {}
+    
+    for row in rows:
+        sid = row["subject_id"]
+        cid = row["category_id"]
+        tid = row["topic_id"]
+
+        # SUBJECT
+        if sid not in tree:
+            tree[sid] = {
+                "id": sid,
+                "name": row["subject_name"],
+                "categories": {}
+            }
+
+        # CATEGORY
+        if cid and cid not in tree[sid]["categories"]:
+            tree[sid]["categories"][cid] = {
+                "id": cid,
+                "name": row["category_name"],
+                "topics": []
+            }
+
+        # TOPIC
+        if tid:
+            tree[sid]["categories"][cid]["topics"].append({
+                "id": tid,
+                "name": row["topic_name"]
+            })
+
+    # Convert nested dicts to arrays
+    result = []
+    for subject in tree.values():
+        subject["categories"] = list(subject["categories"].values())
+        result.append(subject)
+
+    return jsonify(result)
 
 @app.route("/api/random_quiz")
 def random_quiz():
@@ -64,7 +145,7 @@ def random_quiz():
     # Step 1: Get random category
     cursor.execute(f"SELECT DISTINCT category FROM {db_table} WHERE subject = %s  ORDER BY RAND() LIMIT 1", (subject,))
     category = cursor.fetchone()["category"]
-    # print("category = ". category  )
+
     # Step 2: Get random topic from that category
     cursor.execute(f"SELECT DISTINCT topic FROM {db_table} WHERE category = %s ORDER BY RAND() LIMIT 1", (category,))
     topic = cursor.fetchone()["topic"]
@@ -110,78 +191,70 @@ def single_quiz_by_subject(subject):
     category = cursor.fetchone()["category"]
     return category
 
-    # # Step 3: Get 6 random questions
-    # cursor.execute("""
-    #     SELECT question, correct_choice, distractor1, distractor2, distractor3, explanation
-    #     FROM ancient_quiz 
-    #     WHERE subject = %s AND category = %s
-    #     ORDER BY RAND() 
-    #     LIMIT 6
-    # """, (subject, category))
+@app.route("/api/single_quiz_by_category/<int:category_id>")
+def single_quiz_by_category(category_id):
 
-    # questions = []
-    # for row in cursor.fetchall():
-    #     choices = [row["correct_choice"], row["distractor1"], row["distractor2"], row["distractor3"]]
-    #     random.shuffle(choices)
-    #     correct_hash = hashlib.sha256(row["correct_choice"].encode()).hexdigest()
-    #     questions.append({
-    #         "question": row["question"],
-    #         "choices": choices,
-    #         "answer_hash": correct_hash,
-    #         "explanation": row["explanation"]
-    #     })
-
-    # cursor.close()
-    # conn.close()
-    
-    # return jsonify({
-    #     "subject": subject,
-    #     "category": category,
-    #     "topic": topic,
-    #     "questions": questions
-    # })
-
-@app.route("/api/single_quiz_by_category/<subject>,<category>")
-def single_quiz_by_category(subject, category):
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
 
-    # Step 1: Get subject, category
+    # Step 1 — Get random topic in category
+    cursor.execute("""
+        SELECT id, name
+        FROM topics
+        WHERE category_id = %s
+        ORDER BY RAND()
+        LIMIT 1
+    """, (category_id,))
 
-    # Step 2: Get random topic from that category
-    cursor.execute(f"SELECT DISTINCT topic FROM {db_table} WHERE subject = %s AND category = %s ORDER BY RAND() LIMIT 1", (subject, category))
-    topic = cursor.fetchone()["topic"]
+    topic_row = cursor.fetchone()
 
-    # Step 3: Get 6 random questions
-    cursor.execute(f"""
-        SELECT id, question, correct_choice, distractor1, distractor2, distractor3, explanation
-        FROM {db_table} 
-        WHERE subject = %s AND category = %s AND topic = %s
-        ORDER BY RAND() 
+    if not topic_row:
+        return jsonify({"error": "No topics found"}), 404
+
+    topic_id = topic_row["id"]
+    topic_name = topic_row["name"]
+
+    # Step 2 — Get 6 random questions
+    cursor.execute("""
+        SELECT id, question, correct_choice,
+               distractor1, distractor2, distractor3, explanation
+        FROM questions
+        WHERE topic_id = %s
+        ORDER BY RAND()
         LIMIT 6
-    """, (subject, category, topic))
+    """, (topic_id,))
 
     questions = []
+
     for row in cursor.fetchall():
-        question_id = row["id"]
-        choices = [row["correct_choice"], row["distractor1"], row["distractor2"], row["distractor3"]]
+        choices = [
+            row["correct_choice"],
+            row["distractor1"],
+            row["distractor2"],
+            row["distractor3"]
+        ]
+
         random.shuffle(choices)
-        correct_hash = hashlib.sha256(row["correct_choice"].encode()).hexdigest()
-        explanation = row["explanation"]
+
+        correct_hash = hashlib.sha256(
+            row["correct_choice"].encode()
+        ).hexdigest()
+
         questions.append({
-            "question_id": question_id,
+            "question_id": row["id"],
             "question": row["question"],
             "choices": choices,
             "answer_hash": correct_hash,
-            "explanation": explanation
+            "explanation": row["explanation"]
         })
 
     cursor.close()
     conn.close()
-    
+
     return jsonify({
-        "category": category,
-        "topic": topic,
+        "category_id": category_id,
+        "topic_id": topic_id,
+        "topic": topic_name,
         "questions": questions
     })
 
@@ -235,10 +308,6 @@ def getHint(question_id):
 
     # Step 1: Get subject, category
 
-    # Step 2: Get explanation from that subject, category, topic, question
-    # cursor.execute("SELECT DISTINCT topic FROM ancient_quiz WHERE subject = %s AND category = %s ORDER BY RAND() LIMIT 1", (subject, category, topic, question))
-    # explanation = cursor.fetchone()["explanation"]
-
     # # Step 3: Get 6 random questions
     cursor.execute(f"""
         SELECT explanation
@@ -258,31 +327,6 @@ def getHint(question_id):
     conn.close()
 
     return jsonify({"explanation": explanation})
-
-# @app.route("/api/getHint/<subject>, <category>, <topic>, <question>")
-# def getHint(subject, category, topic, question):
-#     conn = get_db()
-#     cursor = conn.cursor(dictionary=True)
-
-#     # Step 1: Get subject, category
-
-#     # Step 2: Get explanation from that subject, category, topic, question
-#     # cursor.execute("SELECT DISTINCT topic FROM ancient_quiz WHERE subject = %s AND category = %s ORDER BY RAND() LIMIT 1", (subject, category, topic, question))
-#     # explanation = cursor.fetchone()["explanation"]
-
-#     # # Step 3: Get 6 random questions
-#     cursor.execute("""
-#         SELECT explanation
-#         FROM ancient_quiz 
-#         WHERE subject = %s AND category = %s AND topic = %s AND question = %s
-#         """, (subject, category, topic, question))
-
-#     explanation = cursor.fetchone()["explanation"]
-#     # data = {"hint":"Dunno Mate!"}
-#     cursor.close()
-#     conn.close()
-
-#     return jsonify({"explanation": explanation})
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)

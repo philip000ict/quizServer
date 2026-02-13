@@ -1,58 +1,76 @@
 export class SubjectCatalog {
-  #subjects; // private, immutable
+  #subjects;
   #currentSubject;
   #currentCategory;
-  constructor(subjectPayload) {
-    if (!subjectPayload || typeof subjectPayload !== "object") {
+
+  constructor(subjectArray) {
+    if (!Array.isArray(subjectArray)) {
       throw new Error("Invalid subjects payload");
     }
-    console.log("constructor(subjectPayload) = ",subjectPayload);
-    // deep clone + freeze to prevent mutation
+
+    // Convert array → indexed map by ID
     this.#subjects = Object.freeze(
       Object.fromEntries(
-        Object.entries(subjectPayload).map(([k, v]) => [
-          k,
-          Object.freeze([...v])
+        subjectArray.map(s => [
+          String(s.id),
+          Object.freeze({
+            id: s.id,
+            name: s.name,
+            categories: Object.freeze(s.categories ?? [])
+          })
         ])
       )
     );
   }
+
   set currentSubject(val) {
-    this.#currentSubject = val;
+    this.#currentSubject = String(val);
   }
+
   get currentSubject() {
     return this.#currentSubject;
   }
+
   set currentCategory(val) {
-    this.#currentCategory = val;
+    this.#currentCategory = String(val);
   }
+
   get currentCategory() {
     return this.#currentCategory;
   }
 
-  getSubjects(val){
-    return this.#subjects[val];
-  }
-
-
-
-  // ===== REPLACEMENT FOR: for (let subject in appState.subjects)
   getSubjectNames() {
-    return Object.keys(this.#subjects);
+    return Object.values(this.#subjects);
   }
 
-  // ===== REPLACEMENT FOR: appState.subjects[appState.subject]
-  getCategoriesFor(subject) {
-    return this.#subjects[subject] ?? [];
+  getCategoriesFor(subjectId) {
+    return this.#subjects[String(subjectId)]?.categories ?? [];
   }
 
-  // Optional safety helpers
-  hasSubject(subject) {
-    return subject in this.#subjects;
+  hasSubject(subjectId) {
+    return String(subjectId) in this.#subjects;
   }
 
+  getSubjectNameById(subjectId) {
+    return this.#subjects[String(subjectId)]?.name ?? null;
+  }
+  getCategoryNameById(categoryId) {
+
+    const cid = String(categoryId);
+
+    for (const subject of Object.values(this.#subjects)) {
+
+      const match = subject.categories
+        ?.find(c => String(c.id) === cid);
+
+      if (match) {
+        return match.name;
+      }
+    }
+
+    return null;
+  }
   get raw() {
-    // read-only escape hatch (still frozen)
     return this.#subjects;
   }
 }
